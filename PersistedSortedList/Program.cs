@@ -26,6 +26,7 @@ namespace SortedFileList
             list.Add(new TestObject { Value = "G" });
 
             var found = list.Get(new TestObject { Value = "A" });
+            Console.Out.WriteLine("Search:" + JsonSerializer.Serialize(found));
             var file = new FileAdapter("repository.db");
             var position = 0;
             byte[] b;
@@ -37,7 +38,7 @@ namespace SortedFileList
 
             file = new FileAdapter("repository.index");
             position = 0;
-            while ((b = file.Read(position, 101)).Length != 0)
+            while ((b = file.Read(position, 101)) != null)
             {
                 Console.Out.WriteLine(position.ToString("X8") + " " + Encoding.UTF8.GetString(b));
                 position += b.Length;
