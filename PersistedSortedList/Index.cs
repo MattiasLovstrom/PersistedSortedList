@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Xml.Linq;
-using PersistedSortedList;
+using SortedFileList;
 
-namespace SortedFileList
+namespace PersistedSortedList
 {
-    public class Index<T> : IIndex<T> 
+    public class Index<T> : IIndex<T> where T : IComparable
     {
         private readonly IRepository<T> _repository;
-        private BTree _tree;
+        private readonly BTree<T> _tree;
 
         public Index(
             string name,
@@ -15,12 +14,12 @@ namespace SortedFileList
         {
             _repository = repository;
             var indexReader = new IndexReader(name);
-            _tree = new BTree(new NodeComparer<T>(repository), indexReader);
+            _tree = new BTree<T>(indexReader, _repository);
         }
 
-        public void Add(long fileReference)
+        public void Add(long fileReference, T value)
         {
-            _tree.Add((int)fileReference);
+            _tree.Add((int)fileReference, value);
         }
 
         public T Get(T prototype)

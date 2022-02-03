@@ -5,7 +5,7 @@ namespace SortedFileList
 {
     public class Repository<T> : IRepository<T>
     {
-        private IFileAdapter _fileAdapter;
+        private readonly IFileAdapter _fileAdapter;
         private int _last;
 
         public Repository(string name)
@@ -26,6 +26,5 @@ namespace SortedFileList
         {
             return JsonSerializer.Deserialize<T>(_fileAdapter.ReadLine(position));
         }
-
     }
 }

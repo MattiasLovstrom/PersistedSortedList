@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace SortedFileList
+﻿namespace PersistedSortedList
 {
     public interface IIndex<T>
     {
-        void Add(long fileReference);
+        void Add(long fileReference, T value);
         T Get(T prototype);
     }
 }

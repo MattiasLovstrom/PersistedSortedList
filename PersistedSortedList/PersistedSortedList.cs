@@ -1,11 +1,12 @@
 ﻿using System;
+using SortedFileList;
 
-namespace SortedFileList
+namespace PersistedSortedList
 {
     public class PersistedSortedList<T> where T : IComparable
     {
         private readonly IIndex<T> _index;
-        private IRepository<T> _repository;
+        private readonly IRepository<T> _repository;
 
 
         public PersistedSortedList(string name)
@@ -25,17 +26,12 @@ namespace SortedFileList
         public void Add(T value)
         {
             var position = _repository.Add(value);
-            _index.Add(position);
+            _index.Add(position, value);
         }
 
         public T Get(T prototype)
         {
             return _index.Get(prototype);
-        }
-
-        public string Display()
-        {
-            return ""; //_adapter.Display();
         }
     }
 }

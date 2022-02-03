@@ -1,4 +1,4 @@
-﻿namespace SortedFileList
+﻿namespace PersistedSortedList
 {
     public interface IRepository<T>
     {

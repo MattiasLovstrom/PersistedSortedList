@@ -1,10 +1,8 @@
-﻿using PersistedSortedList;
-
-namespace SortedFileList
+﻿namespace PersistedSortedList
 {
     public class IndexReader : IIndexReader
     {
-        private IFileAdapter _fileAdapter;
+        private readonly IFileAdapter _fileAdapter;
 
         public IndexReader(string name)
         {
@@ -25,15 +23,15 @@ namespace SortedFileList
                 Position = (int)_fileAdapter.Last
             };
 
-            _fileAdapter.Write(_fileAdapter.Last, BTree.Serialize(node));
+            _fileAdapter.Write(_fileAdapter.Last, Node.Serialize(node));
 
             return node;
         }
 
         public Node Get(int reference)
         {
-            var buffer = _fileAdapter.Read(reference, BTree.NodeLength);
-            var node = BTree.DeserializeNode(buffer);
+            var buffer = _fileAdapter.Read(reference, Node.NodeLength);
+            var node = Node.DeserializeNode(buffer);
             node.Position = reference;
 
             return node;
@@ -41,7 +39,7 @@ namespace SortedFileList
 
         public void Update(Node node)
         {
-            _fileAdapter.Write(node.Position, BTree.Serialize(node));
+            _fileAdapter.Write(node.Position, Node.Serialize(node));
         }
     }
 }

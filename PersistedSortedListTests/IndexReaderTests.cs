@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using PersistedSortedList;
 
 // ReSharper disable once CheckNamespace
 namespace SortedFileList.Tests

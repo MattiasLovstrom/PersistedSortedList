@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
+using PersistedSortedList;
 
 // ReSharper disable once CheckNamespace
 namespace SortedFileList.Tests
@@ -29,7 +30,7 @@ namespace SortedFileList.Tests
 
             _testObject.Add(testItem);
             _repositoryMock.Verify(repository=>repository.Add(It.IsAny<TestItem>()));
-            _indexMock.Verify(index=>index.Add(It.IsAny<long>()));
+            _indexMock.Verify(index=>index.Add(It.IsAny<long>(), It.IsAny<TestItem>()));
         }
     }
 

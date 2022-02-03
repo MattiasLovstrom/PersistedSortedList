@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Linq;
+using SortedFileList;
 
-namespace SortedFileList
+namespace PersistedSortedList
 {
     public class FileAdapter : IFileAdapter
     {
@@ -83,16 +82,5 @@ namespace SortedFileList
         }
 
         public long Last { get; set; }
-        
-        public string Display()
-        {
-            var content = new StringBuilder();
-            foreach (var line in File.ReadAllLines(_fileName))
-            {
-                content.AppendLine(line);
-            }
-
-            return content.ToString();
-        }
     }
 }

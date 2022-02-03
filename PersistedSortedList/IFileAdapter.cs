@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SortedFileList
+﻿namespace PersistedSortedList
 {
     public interface IFileAdapter
     {
