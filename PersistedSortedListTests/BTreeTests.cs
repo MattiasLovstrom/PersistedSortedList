@@ -16,24 +16,5 @@ namespace PersistedSortedList.Tests
 
             Assert.AreEqual(node.Values[0], deserializeNode.Values[0]);
         }
-
-        [TestMethod]
-        public void AddTest()
-        {
-            var mock = new Mock<IIndexReader>();
-
-            var testObject = new BTree<int>(mock.Object, 
-                new Mock<IRepository<int>>().Object);
-            
-            var root = new Node();
-            testObject.Add(2, 2, root);
-            mock.Verify(reader=>reader.Update(It.IsAny<Node>()));
-            mock
-                .Setup(reader => reader.Create())
-                .Returns(new Node());
-            testObject.Add(1, 1, root);
-            mock.Verify(reader => reader.Create());
-
-        }
     }
 }
