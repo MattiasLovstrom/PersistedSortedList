@@ -1,10 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SortedFileList;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Moq;
+using System;
 
+// ReSharper disable once CheckNamespace
 namespace SortedFileList.Tests
 {
     [TestClass()]
@@ -37,7 +35,7 @@ namespace SortedFileList.Tests
 
     public class TestItem : IComparable
     {
-        public int CompareTo(object? obj)
+        public int CompareTo(object obj)
         {
             throw new NotImplementedException();
         }

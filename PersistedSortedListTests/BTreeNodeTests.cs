@@ -1,14 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SortedFileList;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections;
 
+// ReSharper disable once CheckNamespace
 namespace SortedFileList.Tests
 {
-
-
     public class Comparer: IComparer
     {
         private readonly ILoader _loader;

@@ -1,13 +1,8 @@
-﻿using PersistedSortedList;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SortedFileList;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using SortedFileList.Tests;
+using System.Collections.Generic;
 
+// ReSharper disable once CheckNamespace
 namespace PersistedSortedList.Tests
 {
     [TestClass()]
