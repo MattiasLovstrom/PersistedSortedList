@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -36,6 +37,8 @@ namespace PersistedSortedList
 
             return node;
         }
+
+        [DebuggerStepThrough]
         public override string ToString()
         {
             return Encoding.UTF8.GetString(Node.Serialize(this));

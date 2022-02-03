@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using SortedFileList;
 
 namespace PersistedSortedList
 {
@@ -42,11 +40,9 @@ namespace PersistedSortedList
             using var file = File.OpenWrite(_fileName);
             try
             {
-                Console.Out.Write(position.ToString("X") + "-");
                 file.Position = position;
                 file.Write(buffer);
                 file.WriteByte(13);
-                Console.Out.WriteLine(file.Position.ToString("X"));
 
                 return file.Position;
             }

@@ -9,9 +9,7 @@
             _fileAdapter = new FileAdapter(name + ".index");
         }
 
-        public IndexReader(
-            string name,
-            IFileAdapter fileAdapter)
+        public IndexReader(IFileAdapter fileAdapter)
         {
             _fileAdapter = fileAdapter;
         }

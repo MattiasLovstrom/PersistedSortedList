@@ -11,8 +11,7 @@ namespace SortedFileList.Tests
         [TestMethod()]
         public void GetOrCreateEmptyTest()
         {
-            var testObject = new IndexReader("",
-                new Mock<IFileAdapter>().Object);
+            var testObject = new IndexReader(new Mock<IFileAdapter>().Object);
             testObject.Create();
 
         }

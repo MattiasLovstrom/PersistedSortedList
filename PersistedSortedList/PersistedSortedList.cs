@@ -1,5 +1,4 @@
 ﻿using System;
-using SortedFileList;
 
 namespace PersistedSortedList
 {
@@ -7,7 +6,6 @@ namespace PersistedSortedList
     {
         private readonly IIndex<T> _index;
         private readonly IRepository<T> _repository;
-
 
         public PersistedSortedList(string name)
         {

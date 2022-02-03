@@ -1,17 +1,15 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using SortedFileList;
 
 // ReSharper disable once CheckNamespace
 namespace PersistedSortedList.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class BTreeTests
     {
         [TestMethod]
         public void SerializeTest()
         {
-            var node = new Node() { Values = { [0] = 10 } };
+            var node = new Node { Values = { [0] = 10 } };
             var deserializeNode = Node.DeserializeNode(Node.Serialize(node));
 
             Assert.AreEqual(node.Values[0], deserializeNode.Values[0]);

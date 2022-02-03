@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
-using PersistedSortedList;
 
-namespace SortedFileList
+namespace PersistedSortedList
 {
     public class Repository<T> : IRepository<T>
     {
