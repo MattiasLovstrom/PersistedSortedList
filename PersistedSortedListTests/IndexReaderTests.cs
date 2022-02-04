@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Runtime.Caching;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PersistedSortedList;
 
@@ -11,9 +12,10 @@ namespace SortedFileList.Tests
         [TestMethod()]
         public void GetOrCreateEmptyTest()
         {
-            var testObject = new IndexReader(new Mock<IFileAdapter>().Object);
+            var testObject = new IndexReader(
+                new Mock<IFileAdapter>().Object,
+                MemoryCache.Default);
             testObject.Create();
-
         }
     }
 }

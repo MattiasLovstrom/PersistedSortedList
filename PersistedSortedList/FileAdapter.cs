@@ -1,69 +1,64 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace PersistedSortedList
 {
-    public class FileAdapter : IFileAdapter
+    public class FileAdapter : IFileAdapter, IDisposable
     {
         private readonly string _fileName;
+        private readonly FileStream _file;
 
         public FileAdapter(string fileName)
         {
             _fileName = fileName;
-            if (!File.Exists(fileName))
-            {
-                using var file = File.Create(fileName);
-                file.Close();
-            }
+            _file = !File.Exists(fileName) 
+                ? File.Create(fileName) 
+                : File.Open(fileName, FileMode.Open);
         }
 
         public byte[] Read(long position, long length)
         {
-            var file = File.OpenRead(_fileName);
             try
             {
-                file.Position = position;
+                _file.Position = position;
                 var buffer = new byte[length];
-                var read = file.Read(buffer, 0, buffer.Length);
+                var read = _file.Read(buffer, 0, buffer.Length);
                 
                 return read == length ? buffer : null; 
             }
             finally
             {
-                Last = file.Length;
-                file.Close();
+                Last = _file.Length;
             }
         }
 
         public long Write(long position, byte[] buffer)
         {
-            using var file = File.OpenWrite(_fileName);
             try
             {
-                file.Position = position;
-                file.Write(buffer);
-                file.WriteByte(13);
+                _file.Position = position;
+                _file.Write(buffer);
+                _file.WriteByte(13);
 
-                return file.Position;
+                return _file.Position;
             }
             finally
             {
-                Last = file.Length;
-                file.Close();
+                Last = _file.Length;
             }
         }
 
         public byte[] ReadLine(int position)
         {
             var buffer = new List<byte>();
-            using var file = File.OpenRead(_fileName);
             try
             {
-                file.Position = position;
+                _file.Position = position;
                 int b;
                 do
                 {
-                    b = file.ReadByte();
+                    b = _file.ReadByte();
                     if (b < 0) return buffer.ToArray();
                     buffer.Add((byte)b);
                 } while (b != 13);
@@ -72,11 +67,19 @@ namespace PersistedSortedList
             }
             finally
             {
-                Last = file.Length;
-                file.Close();
+                Last = _file.Length;
             }
         }
 
         public long Last { get; set; }
+
+        public void Dispose()
+        {
+            if (_file != null)
+            {
+                _file.Close();
+                _file.Dispose();
+            }
+        }
     }
 }

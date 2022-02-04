@@ -5,15 +5,15 @@ namespace PersistedSortedList
     public class Index<T> : IIndex<T> where T : IComparable
     {
         private readonly IRepository<T> _repository;
-        private IndexReader _indexReader;
-        private Node _root;
+        private readonly IIndexReader _indexReader;
+        private readonly Node _root;
 
         public Index(
-            string name,
+            IIndexReader indexReader,
             IRepository<T> repository)
         {
+            _indexReader = indexReader;
             _repository = repository;
-            _indexReader = new IndexReader(name);
             _root = _indexReader.Create();
         }
 
@@ -38,15 +38,16 @@ namespace PersistedSortedList
                 if (value.CompareTo(v) <= 0) break;
             }
 
-            if (current.References[i] == 0)
+            if (current.References[i] != 0)
             {
-                var newNode = _indexReader.Create();
-                current.References[i] = newNode.Position;
-                _indexReader.Update(current);
-                return Add(position, value, newNode);
+                return Add(position, value, _indexReader.Get(current.References[i]));
             }
+            
+            var newNode = _indexReader.Create();
+            current.References[i] = newNode.Position;
+            _indexReader.Update(current);
+            return Add(position, value, newNode);
 
-            return Add(position, value, _indexReader.Get(current.References[i]));
         }
 
         public T Get(T prototype)

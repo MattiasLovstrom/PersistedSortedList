@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Runtime.Caching;
+using System.Text.Json;
 
 namespace PersistedSortedList
 {
@@ -6,10 +8,14 @@ namespace PersistedSortedList
     {
         private readonly IFileAdapter _fileAdapter;
         private int _last;
+        private readonly MemoryCache _cache;
 
-        public Repository(string name)
+        public Repository(
+            IFileAdapter fileAdapter,
+            MemoryCache cache)
         {
-            _fileAdapter = new FileAdapter(name + ".db");
+            _cache = cache;
+            _fileAdapter = fileAdapter;
             _last = 1;
 
         }
@@ -17,13 +23,20 @@ namespace PersistedSortedList
         {
             var startPosition = _last;
             _last = (int)_fileAdapter.Write(_last, JsonSerializer.SerializeToUtf8Bytes(value));
-
+            _cache.Add(startPosition.ToString(), value, new CacheItemPolicy {SlidingExpiration = TimeSpan.FromHours(10)});
             return startPosition;
         }
 
         public T Get(int position)
         {
-            return JsonSerializer.Deserialize<T>(_fileAdapter.ReadLine(position));
+            if (_cache.Get(position.ToString()) is T value)
+            {
+                return value;
+            }
+
+            value = JsonSerializer.Deserialize<T>(_fileAdapter.ReadLine(position));
+            _cache.Add(position.ToString(), value, new CacheItemPolicy { SlidingExpiration = TimeSpan.FromHours(10) });
+            return value;
         }
     }
 }
