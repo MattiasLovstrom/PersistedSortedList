@@ -9,8 +9,8 @@ namespace PersistedSortedList.Tests
         [TestMethod]
         public void SerializeTest()
         {
-            var node = new Node { Values = { [0] = 10 } };
-            var deserializeNode = Node.DeserializeNode(Node.Serialize(node));
+            var node = new Node1 { Values = { [0] = 10 } };
+            var deserializeNode = Node1.DeserializeNode(Node1.Serialize(node));
 
             Assert.AreEqual(node.Values[0], deserializeNode.Values[0]);
         }

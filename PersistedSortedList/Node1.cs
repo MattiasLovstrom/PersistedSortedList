@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PersistedSortedList
 {
-    public class Node
+    public class Node1
     {
         //public const int NodeLength = 100;
         //[00000000,00000000, 00000000,0000000,000000]
@@ -17,7 +17,7 @@ namespace PersistedSortedList
         public int[] Values = new int[BranchingFactor];
         public int[] References = new int[BranchingFactor + 1];
 
-        public static byte[] Serialize(Node node)
+        public static byte[] Serialize(Node1 node)
         {
             var serialized = new StringBuilder();
             serialized.Append("[");
@@ -29,9 +29,9 @@ namespace PersistedSortedList
             return Encoding.UTF8.GetBytes(serialized.ToString());
         }
 
-        public static Node DeserializeNode(byte[] block)
+        public static Node1 DeserializeNode(byte[] block)
         {
-            var node = new Node();
+            var node = new Node1();
             var items = Encoding.UTF8.GetString(block).TrimStart('[').TrimEnd(']').Split(',');
             var references = items.Select(i => int.Parse(i, NumberStyles.HexNumber)).ToArray();
 
@@ -44,7 +44,7 @@ namespace PersistedSortedList
         [DebuggerStepThrough]
         public override string ToString()
         {
-            return Encoding.UTF8.GetString(Node.Serialize(this));
+            return Encoding.UTF8.GetString(Node1.Serialize(this));
         }
     }
 }

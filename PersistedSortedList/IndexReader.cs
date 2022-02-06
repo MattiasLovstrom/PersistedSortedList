@@ -16,36 +16,36 @@ namespace PersistedSortedList
             _fileAdapter = fileAdapter;
         }
 
-        public Node Create(int parentPosition)
+        public Node1 Create(int parentPosition)
         {
-            var node = new Node
+            var node = new Node1
             {
                 Parent = parentPosition,
                 Position = (int)_fileAdapter.Last
             };
 
-            _fileAdapter.Write(_fileAdapter.Last, Node.Serialize(node));
+            _fileAdapter.Write(_fileAdapter.Last, Node1.Serialize(node));
             _cache.Add(node.Position.ToString(), node, new CacheItemPolicy {SlidingExpiration = TimeSpan.FromHours(1)});
             
             return node;
         }
 
-        public Node Get(int reference)
+        public Node1 Get(int reference)
         {
-            if (_cache.Get(reference.ToString()) is Node node)
+            if (_cache.Get(reference.ToString()) is Node1 node)
             {
                 return node;
             }
-            var buffer = _fileAdapter.Read(reference, Node.NodeLength);
-            node = Node.DeserializeNode(buffer);
+            var buffer = _fileAdapter.Read(reference, Node1.NodeLength);
+            node = Node1.DeserializeNode(buffer);
             node.Position = reference;
 
             return node;
         }
 
-        public void Update(Node node)
+        public void Update(Node1 node)
         {
-            _fileAdapter.Write(node.Position, Node.Serialize(node));
+            _fileAdapter.Write(node.Position, Node1.Serialize(node));
             _cache.Remove(node.Position.ToString());
             _cache.Add(node.Position.ToString(), node, new CacheItemPolicy {SlidingExpiration = TimeSpan.FromHours(1)});
         }

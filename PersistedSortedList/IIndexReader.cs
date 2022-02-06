@@ -2,8 +2,8 @@
 {
     public interface IIndexReader
     {
-        Node Create(int parent);
-        Node Get(int reference);
-        void Update(Node node);
+        Node1 Create(int parent);
+        Node1 Get(int reference);
+        void Update(Node1 node);
     }
 }

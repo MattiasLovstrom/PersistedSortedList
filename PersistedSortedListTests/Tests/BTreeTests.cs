@@ -14,27 +14,20 @@ namespace PersistedSortedList.Tests.Tests
         {
             /// BTree(2), for example, will create a 2-3-4 tree (each node contains 1-3 items
             /// and 2-4 children).
-            var tr = new BTree<Int>(2, new IntComparer());
-            tr.ReplaceOrInsert(new Int(1));
-            tr.ReplaceOrInsert(new Int(2));
-            tr.ReplaceOrInsert(new Int(3));
-            tr.ReplaceOrInsert(new Int(4));
-            tr.ReplaceOrInsert(new Int(5));
-            tr.ReplaceOrInsert(new Int(6));
-            tr.ReplaceOrInsert(new Int(7));
-            tr.ReplaceOrInsert(new Int(8));
-            tr.ReplaceOrInsert(new Int(9));
-            tr.ReplaceOrInsert(new Int(10));
+            var tr = new BTree(2);
+            tr.ReplaceOrInsert(1);
+            tr.ReplaceOrInsert(2);
+            tr.ReplaceOrInsert(3);
+            tr.ReplaceOrInsert(4);
+            tr.ReplaceOrInsert(5);
+            tr.ReplaceOrInsert(6);
+            tr.ReplaceOrInsert(7);
+            tr.ReplaceOrInsert(8);
+            tr.ReplaceOrInsert(9);
+            tr.ReplaceOrInsert(10);
 
-            var node = tr.Get(new Int(4));
-        }
-    }
-
-    public class IntComparer : Comparer<Int>
-    {
-        public override int Compare(Int x, Int y)
-        {
-            return x.CompareTo(y);
+            var node = tr.Get(4);
+            Assert.AreEqual("4", node.ToString());
         }
     }
 }

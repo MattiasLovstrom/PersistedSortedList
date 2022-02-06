@@ -91,7 +91,7 @@ namespace PersistedSortedList
 
             using var file1 = new FileAdapter("repository.index");
             position = 0;
-            while ((b = file1.Read(position, Node.NodeLength+1)) != null)
+            while ((b = file1.Read(position, Node1.NodeLength+1)) != null)
             {
                 Console.Out.WriteLine(position.ToString("X8") + " " + Encoding.UTF8.GetString(b));
                 position += b.Length;

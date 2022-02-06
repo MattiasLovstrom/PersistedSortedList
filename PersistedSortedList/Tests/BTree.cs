@@ -1,61 +1,60 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace PersistedSortedList.Tests
 {
-    public class BTree<T> where T : class
+    public class BTree
     {
-        private int Degree { get; set; }
-        private Node<T> Root { get; set; }
-        private CopyOnWriteContext<T> Cow { get; set; }
-        public int Length { get; private set; }
+        private readonly int _degree;
+        private Node _root;
+        private readonly IndexReader _indexReader;
+        public int Length;
 
-        public BTree(int degree, Comparer<T> comparer)
-            : this(degree, new FreeList<T>(comparer))
+        public BTree(int degree)
+            : this(degree, new IndexReader())
         { }
 
-        public BTree(int degree, FreeList<T> f)
+        public BTree(int degree, IndexReader indexReader)
         {
             if (degree <= 1)
             {
                 Environment.FailFast("bad degree");
             }
-            Degree = degree;
-            Cow = new CopyOnWriteContext<T> { FreeList = f };
-        }
-        public T Get(T key)
-        {
-            return Root?.Get(key);
+            _degree = degree;
+            _indexReader = indexReader;
         }
 
-        public T ReplaceOrInsert(T item)
+        public int Get(int key)
         {
-            if (item == null)
+            return _root.Get(key);
+        }
+
+        public int ReplaceOrInsert(int item)
+        {
+            if (item == default)
             {
                 Environment.FailFast("null item being added to BTree");
             }
-            if (Root == null)
+
+            if (_root == null)
             {
-                Root = Cow.NewNode();
-                Root.Items.Add(item);
+                _root = _indexReader.NewNode();
+                _root.Items.Add(item);
                 Length++;
-                return null;
+                return default;
             }
-            else
+
+            _root = _root.MutableFor(_indexReader);
+            if (_root.Items.Count >= MaxItems())
             {
-                Root = Root.MutableFor(Cow);
-                if (Root.Items.Count >= MaxItems())
-                {
-                    var (item2, second) = Root.Split(MaxItems() / 2);
-                    var oldRoot = Root;
-                    Root = Cow.NewNode();
-                    Root.Items.Add(item2);
-                    Root.Children.Add(oldRoot);
-                    Root.Children.Add(second);
-                }
+                var (item2, second) = _root.Split(MaxItems() / 2);
+                var oldRoot = _root;
+                _root = _indexReader.NewNode();
+                _root.Items.Add(item2);
+                _root.Children.Add(oldRoot);
+                _root.Children.Add(second);
             }
-            T result = Root.Insert(item, MaxItems());
-            if (result == null)
+            var result = _root.Insert(item, MaxItems());
+            if (result == default)
             {
                 Length++;
             }
@@ -64,10 +63,10 @@ namespace PersistedSortedList.Tests
 
         private int MaxItems()
         {
-            return (Degree * 2) - 1;
+            return _degree * 2 - 1;
         }
 
-        public void Print(Node<T> current, int level = 0)
+        public void Print(Node current, int level = 0)
         {
             Console.Out.WriteLine(current);
             foreach (var child in current.Children)

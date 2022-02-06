@@ -15,7 +15,7 @@ namespace PersistedSortedList.Tests
         [TestInitialize]
         public void Init()
         {
-            Node.BranchingFactor = 2;
+            Node1.BranchingFactor = 2;
             var repositoryMock = new Mock<IRepository<TestObject>>();
             repositoryMock.Setup(repository => repository.Get(It.IsAny<int>()))
                 .Returns((int p) => new TestObject { Value = p.ToString() });
@@ -31,7 +31,7 @@ namespace PersistedSortedList.Tests
             var node = _testObject.Add(
                 1,
                 new TestObject { Value = "1" },
-                new Node { });
+                new Node1 { });
 
             Assert.AreEqual(1, node.Values[0]);
         }
@@ -42,7 +42,7 @@ namespace PersistedSortedList.Tests
             var node = _testObject.Add(
                 2,
                 new TestObject { Value = "2" },
-                new Node { Values = new []{1,0}});
+                new Node1 { Values = new []{1,0}});
 
             Assert.AreEqual(2, node.Values[1]);
         }
@@ -53,7 +53,7 @@ namespace PersistedSortedList.Tests
             var node = _testObject.Add(
                 3,
                 new TestObject { Value = "3" },
-                new Node { Values = new[] { 1, 2 } });
+                new Node1 { Values = new[] { 1, 2 } });
 
             Assert.AreEqual(3, node.Values[0]);
         }
