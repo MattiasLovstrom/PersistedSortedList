@@ -19,8 +19,8 @@
             if (ReferenceEquals(n.Cow, this))
             {
                 // clear to allow GC
-                n.Items.Truncate(0);
-                n.Children.Truncate(0);
+                n.Items.Clear();
+                n.Children.Clear();
                 n.Cow = null;
                 return FreeList.FreeNode(n) ? FreeType.ftStored : FreeType.ftFreeListFull;
             }

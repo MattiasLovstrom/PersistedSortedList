@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PersistedSortedList.Tests
 {
@@ -38,21 +37,21 @@ namespace PersistedSortedList.Tests
             if (Root == null)
             {
                 Root = Cow.NewNode();
-                Root.Items.Append(item);
+                Root.Items.Add(item);
                 Length++;
                 return null;
             }
             else
             {
                 Root = Root.MutableFor(Cow);
-                if (Root.Items.Length >= MaxItems())
+                if (Root.Items.Count >= MaxItems())
                 {
-                    (T item2, Node<T> second) = Root.Split(MaxItems() / 2);
-                    Node<T> oldRoot = Root;
+                    var (item2, second) = Root.Split(MaxItems() / 2);
+                    var oldRoot = Root;
                     Root = Cow.NewNode();
-                    Root.Items.Append(item2);
-                    Root.Children.Append(oldRoot);
-                    Root.Children.Append(second);
+                    Root.Items.Add(item2);
+                    Root.Children.Add(oldRoot);
+                    Root.Children.Add(second);
                 }
             }
             T result = Root.Insert(item, MaxItems());
