@@ -8,9 +8,12 @@ namespace PersistedSortedList
 {
     public class Node
     {
-        public const int NodeLength = 100;
-        public const int BranchingFactor = 5;
+        //public const int NodeLength = 100;
+        //[00000000,00000000, 00000000,0000000,000000]
+        public static int BranchingFactor = 2;
+        public static int NodeLength = 2 + 8 * BranchingFactor + 8*(BranchingFactor+1) + 2* BranchingFactor;
         public int Position { get; set; }
+        public int Parent { get; set; }
         public int[] Values = new int[BranchingFactor];
         public int[] References = new int[BranchingFactor + 1];
 
@@ -30,7 +33,7 @@ namespace PersistedSortedList
         {
             var node = new Node();
             var items = Encoding.UTF8.GetString(block).TrimStart('[').TrimEnd(']').Split(',');
-            var references = items.Select(i => Int32.Parse(i, NumberStyles.HexNumber)).ToArray();
+            var references = items.Select(i => int.Parse(i, NumberStyles.HexNumber)).ToArray();
 
             Array.Copy(references, node.Values, BranchingFactor);
             Array.Copy(references, BranchingFactor, node.References, 0, BranchingFactor + 1);

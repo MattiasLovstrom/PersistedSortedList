@@ -2,7 +2,7 @@
 {
     public interface IIndexReader
     {
-        Node Create();
+        Node Create(int parent);
         Node Get(int reference);
         void Update(Node node);
     }

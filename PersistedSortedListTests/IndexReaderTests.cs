@@ -15,7 +15,7 @@ namespace SortedFileList.Tests
             var testObject = new IndexReader(
                 new Mock<IFileAdapter>().Object,
                 MemoryCache.Default);
-            testObject.Create();
+            testObject.Create(0);
         }
     }
 }

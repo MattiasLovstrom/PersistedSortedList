@@ -15,7 +15,6 @@ namespace PersistedSortedList
             File.Delete("t1");
             File.Delete("repository.db");
             File.Delete("repository.index");
-            Thread.Sleep(1000);
             FunctionTest();
             //PerformenceTest();
         }
@@ -68,15 +67,15 @@ namespace PersistedSortedList
 
             using (var list = new PersistedSortedList<TestObject>("repository"))
             {
-                list.Add(new TestObject { Value = "H" });
-                list.Add(new TestObject { Value = "C" });
-                list.Add(new TestObject { Value = "B" });
-                list.Add(new TestObject { Value = "A", Extra = "Testar A" });
-                list.Add(new TestObject { Value = "D" });
-                list.Add(new TestObject { Value = "E" });
-                list.Add(new TestObject { Value = "F" });
-                list.Add(new TestObject { Value = "G" });
-                var found = list.Get(new TestObject { Value = "A" });
+                list.Add(new TestObject { Value = "1" });
+                list.Add(new TestObject { Value = "2" });
+                list.Add(new TestObject { Value = "3" });
+                list.Add(new TestObject { Value = "4", Extra = "Testar A" });
+                list.Add(new TestObject { Value = "5" });
+                list.Add(new TestObject { Value = "6" });
+                list.Add(new TestObject { Value = "7" });
+                //list.Add(new TestObject { Value = "8" });
+                var found = list.Get(new TestObject { Value = "7" });
                 Console.Out.WriteLine("Search:" + JsonSerializer.Serialize(found));
             }
 
@@ -92,7 +91,7 @@ namespace PersistedSortedList
 
             using var file1 = new FileAdapter("repository.index");
             position = 0;
-            while ((b = file1.Read(position, 101)) != null)
+            while ((b = file1.Read(position, Node.NodeLength+1)) != null)
             {
                 Console.Out.WriteLine(position.ToString("X8") + " " + Encoding.UTF8.GetString(b));
                 position += b.Length;

@@ -16,10 +16,11 @@ namespace PersistedSortedList
             _fileAdapter = fileAdapter;
         }
 
-        public Node Create()
+        public Node Create(int parentPosition)
         {
             var node = new Node
             {
+                Parent = parentPosition,
                 Position = (int)_fileAdapter.Last
             };
 
