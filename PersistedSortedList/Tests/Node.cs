@@ -17,9 +17,9 @@ namespace PersistedSortedList.Tests
             Children = new List<Node>();
         }
 
-        public (int, bool) Find(int item)
+        public bool TryGetValue(int item, out int index)
         {
-            var index = Items.BinarySearch(0, Items.Count, item, Comparer<int>.Default);
+            index = Items.BinarySearch(0, Items.Count, item, Comparer<int>.Default);
 
             var found = index >= 0;
 
@@ -28,13 +28,18 @@ namespace PersistedSortedList.Tests
                 index = ~index;
             }
 
-            return index > 0 && !Less(Items[index - 1], item) ? (index - 1, true) : (index, found);
+            if (index <= 0 || Less(Items[index - 1], item))
+            {
+                return found;
+            }
+
+            index--;
+            return true;
         }
 
         public int Insert(int item, int maxItems)
         {
-            var (i, found) = Find(item);
-            if (found)
+            if (TryGetValue(item, out var i))
             {
                 var n = Items[i];
                 Items[i] = item;
@@ -68,8 +73,7 @@ namespace PersistedSortedList.Tests
 
         public int Get(int key)
         {
-            var (i, found) = Find(key);
-            if (found)
+            if (TryGetValue(key, out var i))
             {
                 return Items[i];
             }
