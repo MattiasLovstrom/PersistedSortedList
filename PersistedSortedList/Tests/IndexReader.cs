@@ -19,7 +19,7 @@ namespace PersistedSortedList.Tests
         {
             lock (_lockObject)
             {
-                int index = _freelist.Count - 1;
+                var index = _freelist.Count - 1;
 
                 if (index < 0)
                 {

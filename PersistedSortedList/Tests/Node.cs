@@ -141,7 +141,8 @@ namespace PersistedSortedList.Tests
 
         public override string ToString()
         {
-            var message = new StringBuilder("[");
+            //[1<2>3]<4>[5<6>7]
+            var message = new StringBuilder("");
             if (Items.Any())
             {
                 message.Append(Items.Select(i => i.ToString()).Aggregate((c, n) => c + "," + n))

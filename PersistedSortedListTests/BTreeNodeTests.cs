@@ -8,6 +8,7 @@ namespace PersistedSortedList.Tests
     [TestClass()]
     public class BTreeNodeTests
     {
+        [Ignore]
         [TestMethod()]
         public void AddTest()
         {

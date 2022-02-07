@@ -22,9 +22,9 @@ namespace PersistedSortedList.Tests.Tests
             tr.ReplaceOrInsert(5);
             tr.ReplaceOrInsert(6);
             tr.ReplaceOrInsert(7);
-            tr.ReplaceOrInsert(8);
-            tr.ReplaceOrInsert(9);
-            tr.ReplaceOrInsert(10);
+            //tr.ReplaceOrInsert(8);
+            //tr.ReplaceOrInsert(9);
+            //tr.ReplaceOrInsert(10);
 
             var node = tr.Get(4);
             Assert.AreEqual("4", node.ToString());
