@@ -2,18 +2,18 @@
 
 namespace PersistedSortedList.Tests
 {
-    public class BTree
+    public class NewBTree
     {
-        private Node _root;
-        private readonly IndexReader _indexReader;
+        private NewNode _root;
+        private readonly NewIndexReader _indexReader;
         public int Length;
         private int MaxItems;
 
-        public BTree(int degree)
-            : this(degree, new IndexReader())
+        public NewBTree(int degree)
+            : this(degree, new NewIndexReader())
         { }
 
-        public BTree(int maxItems, IndexReader indexReader)
+        public NewBTree(int maxItems, NewIndexReader indexReader)
         {
             MaxItems = maxItems;
             _indexReader = indexReader;
@@ -57,7 +57,7 @@ namespace PersistedSortedList.Tests
             return result;
         }
 
-        public void Print(Node current, int level = 0)
+        public void Print(NewNode current, int level = 0)
         {
             Console.Out.WriteLine(current);
             foreach (var child in current.Children)
