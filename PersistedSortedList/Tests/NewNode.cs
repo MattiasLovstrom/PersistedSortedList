@@ -58,7 +58,7 @@ namespace PersistedSortedList.Tests
             return false;
         }
 
-        public int Insert(int fileReference, int maxItems)
+        public int Insert(int fileReference, int branchingFactor)
         {
             if (TryGetReference(fileReference, out var i))
             {
@@ -71,7 +71,7 @@ namespace PersistedSortedList.Tests
                 Items.Insert(i, fileReference);
                 return default;
             }
-            if (MaybeSplitChild(i, maxItems))
+            if (MaybeSplitChild(i, branchingFactor))
             {
                 var inTree = Items[i];
                 var item = _repository.Get(fileReference);
@@ -92,7 +92,7 @@ namespace PersistedSortedList.Tests
                     return n;
                 }
             }
-            return MutableChild(i).Insert(fileReference, maxItems);
+            return MutableChild(i).Insert(fileReference, branchingFactor);
         }
 
         public T Get(T prototype)
