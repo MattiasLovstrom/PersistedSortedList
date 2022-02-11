@@ -99,11 +99,11 @@ namespace PersistedSortedList.Tests
             return MutableChild(i).Insert(fileReference, maxItems);
         }
 
-        public int Get(int key)
+        public T Get(int key)
         {
             if (TryGetValue(key, out var i))
             {
-                return Items[i];
+                return _repository.Get(Items[i]);
             }
 
             if (Children.Count > 0)

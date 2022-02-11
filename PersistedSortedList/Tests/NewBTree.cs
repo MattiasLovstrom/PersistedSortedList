@@ -25,7 +25,7 @@ namespace PersistedSortedList.Tests
             _repository = repository;
         }
 
-        public int Get(int key)
+        public T Get(int key)
         {
             return _root.Get(key);
         }
