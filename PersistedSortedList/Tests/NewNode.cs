@@ -7,71 +7,96 @@ namespace PersistedSortedList.Tests
 {
     public class NewNode<T> where T : IComparable
     {
-        public readonly List<int> Items;
+        public List<int> Items { get; set; }
         public readonly List<NewNode<T>> Children;
         private readonly NewIndexReader<T> _indexReader;
+        private readonly IRepository<T> _repository;
 
         public NewNode(
             NewIndexReader<T> indexReader,
             IRepository<T> repository)
         {
             _indexReader = indexReader;
+            _repository = repository;
             Items = new List<int>();
             Children = new List<NewNode<T>>();
         }
 
-        public bool TryGetValue(int item, out int index)
+        public bool TryGetValue(int fileReference, out int index)
         {
-            index = Items.BinarySearch(0, Items.Count, item, Comparer<int>.Default);
-
-            var found = index >= 0;
-
-            if (!found)
+            for (index = 0; index < Items.Count; index++)
             {
-                index = ~index;
+                if (Items[index] == fileReference)
+                {
+                    return true;
+                }
             }
 
-            if (index <= 0 || Less(Items[index - 1], item))
+            var searchFor = _repository.Get(fileReference);
+            for (index = 0; index < Items.Count; index++)
             {
-                return found;
+                var item = _repository.Get(index);
+                if (Less(searchFor, item))
+                {
+                    return false;
+                }
             }
+            return false;
 
-            index--;
-            return true;
+            //index = Items.BinarySearch(0, Items.Count, item, Comparer<int>.Default);
+
+            //var found = index >= 0;
+
+            //if (!found)
+            //{
+            //    index = ~index;
+            //}
+
+
+            //if (index <= 0 || Less(Items[index - 1], item))
+            //{
+            //    return found;
+            //}
+
+            //index--;
+            //return true;
         }
 
-        public int Insert(int item, int maxItems)
+        public int Insert(int fileReference, int maxItems)
         {
-            if (TryGetValue(item, out var i))
+            if (TryGetValue(fileReference, out var i))
             {
                 var n = Items[i];
-                Items[i] = item;
+                Items[i] = fileReference;
                 return n;
             }
             if (Children.Count == 0)
             {
-                Items.Insert(i, item);
+                Items.Insert(i, fileReference);
                 return default;
             }
             if (MaybeSplitChild(i, maxItems))
             {
                 var inTree = Items[i];
-                if (Less(item, inTree))
+                var item = _repository.Get(fileReference);
+                var inTreeItem = _repository.Get(inTree);
+
+                if (Less(item, inTreeItem))
                 {
                     // no change, we want first split node
                 }
-                else if (Less(inTree, item))
+                else if (Less(inTreeItem, item))
                 {
                     i++; // we want second split node
                 }
                 else
                 {
                     var n = Items[i];
-                    Items[i] = item;
+                    Items[i] = fileReference;
                     return n;
                 }
             }
-            return MutableChild(i).Insert(item, maxItems);
+            return MutableChild(i).Insert(fileReference, maxItems);
         }
 
         public int Get(int key)
@@ -141,7 +166,7 @@ namespace PersistedSortedList.Tests
             return (item, next);
         }
 
-        private bool Less(int x, int y)
+        private bool Less(T x, T y)
         {
             return x.CompareTo(y) < 0;
         }

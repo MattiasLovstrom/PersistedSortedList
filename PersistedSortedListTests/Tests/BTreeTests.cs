@@ -3,6 +3,7 @@ using PersistedSortedList.Tests;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Moq;
 
 namespace PersistedSortedList.Tests.Tests
 {
@@ -14,7 +15,14 @@ namespace PersistedSortedList.Tests.Tests
         {
             /// BTree(2), for example, will create a 2-3-4 tree (each node contains 1-3 items
             /// and 2-4 children).
-            var tr = new NewBTree<int>(2);
+            var repositoryMock = new Mock<IRepository<int>>();
+            repositoryMock.Setup(repository => repository.Get(It.IsAny<int>()))
+                .Returns((int i) => i);
+            var indexReader = new NewIndexReader<int>(repositoryMock.Object);
+            var tr = new NewBTree<int>(2,
+                indexReader, 
+                repositoryMock.Object);
+
             tr.ReplaceOrInsert(1);
             tr.ReplaceOrInsert(2);
             tr.ReplaceOrInsert(3);
