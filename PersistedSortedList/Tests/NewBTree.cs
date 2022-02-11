@@ -1,22 +1,28 @@
 ﻿using System;
+using System.Runtime.Caching;
 
 namespace PersistedSortedList.Tests
 {
-    public class NewBTree
+    public class NewBTree<T>
     {
-        private NewNode _root;
-        private readonly NewIndexReader _indexReader;
+        private NewNode<T> _root;
+        private readonly NewIndexReader<T> _indexReader;
+        private readonly IRepository<T> _repository;
         public int Length;
         private int MaxItems;
 
-        public NewBTree(int degree)
-            : this(degree, new NewIndexReader())
-        { }
+        public NewBTree(int maxItems)
+        {
+            MaxItems = maxItems;
+            _repository = new Repository<T>(new FileAdapter("test"), MemoryCache.Default);
+            _indexReader = new NewIndexReader<T>(_repository);
+        }
 
-        public NewBTree(int maxItems, NewIndexReader indexReader)
+        public NewBTree(int maxItems, NewIndexReader<T> indexReader, IRepository<T> repository)
         {
             MaxItems = maxItems;
             _indexReader = indexReader;
+            _repository = repository;
         }
 
         public int Get(int key)
@@ -57,7 +63,7 @@ namespace PersistedSortedList.Tests
             return result;
         }
 
-        public void Print(NewNode current, int level = 0)
+        public void Print(NewNode<T> current, int level = 0)
         {
             Console.Out.WriteLine(current);
             foreach (var child in current.Children)

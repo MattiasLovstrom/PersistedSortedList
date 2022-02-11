@@ -4,17 +4,19 @@ using System.Text;
 
 namespace PersistedSortedList.Tests
 {
-    public class NewNode
+    public class NewNode<T>
     {
         public readonly List<int> Items;
-        public readonly List<NewNode> Children;
-        private readonly NewIndexReader _indexReader;
+        public readonly List<NewNode<T>> Children;
+        private readonly NewIndexReader<T> _indexReader;
 
-        public NewNode(NewIndexReader indexReader)
+        public NewNode(
+            NewIndexReader<T> indexReader,
+            IRepository<T> repository)
         {
             _indexReader = indexReader;
             Items = new List<int>();
-            Children = new List<NewNode>();
+            Children = new List<NewNode<T>>();
         }
 
         public bool TryGetValue(int item, out int index)
@@ -98,14 +100,14 @@ namespace PersistedSortedList.Tests
             return true;
         }
 
-        public NewNode MutableChild(int i)
+        public NewNode<T> MutableChild(int i)
         {
             var c = Children[i].MutableFor(_indexReader);
             Children[i] = c;
             return c;
         }
 
-        public NewNode MutableFor(NewIndexReader cow)
+        public NewNode<T> MutableFor(NewIndexReader<T> cow)
         {
             if (ReferenceEquals(_indexReader, cow))
             {
@@ -120,7 +122,7 @@ namespace PersistedSortedList.Tests
             return node;
         }
 
-        public (int item, NewNode node) Split(int i)
+        public (int item, NewNode<T> node) Split(int i)
         {
             var item = Items[i];
             var next = _indexReader.NewNode();

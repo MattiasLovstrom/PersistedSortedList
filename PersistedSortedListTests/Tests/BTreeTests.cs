@@ -14,7 +14,7 @@ namespace PersistedSortedList.Tests.Tests
         {
             /// BTree(2), for example, will create a 2-3-4 tree (each node contains 1-3 items
             /// and 2-4 children).
-            var tr = new NewBTree(2);
+            var tr = new NewBTree<int>(2);
             tr.ReplaceOrInsert(1);
             tr.ReplaceOrInsert(2);
             tr.ReplaceOrInsert(3);

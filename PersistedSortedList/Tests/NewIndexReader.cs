@@ -2,20 +2,22 @@
 
 namespace PersistedSortedList.Tests
 {
-    public class NewIndexReader 
+    public class NewIndexReader<T>
     {
+        private readonly IRepository<T> _repository;
         private const int DefaultFreeListSize = 32;
 
         private readonly object _lockObject;
-        private readonly List<NewNode> _freelist;
+        private readonly List<NewNode<T>> _freelist;
 
-        public NewIndexReader()
+        public NewIndexReader(IRepository<T> repository)
         {
+            _repository = repository;
             _lockObject = new object();
-            _freelist = new List<NewNode>(DefaultFreeListSize);
+            _freelist = new List<NewNode<T>>(DefaultFreeListSize);
         }
         
-        public NewNode NewNode()
+        public NewNode<T> NewNode()
         {
             lock (_lockObject)
             {
@@ -23,7 +25,7 @@ namespace PersistedSortedList.Tests
 
                 if (index < 0)
                 {
-                    return new NewNode(this);
+                    return new NewNode<T>(this, _repository);
                 }
 
                 var n = _freelist[index];
