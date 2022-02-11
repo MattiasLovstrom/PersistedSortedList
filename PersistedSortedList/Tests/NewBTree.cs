@@ -3,7 +3,7 @@ using System.Runtime.Caching;
 
 namespace PersistedSortedList.Tests
 {
-    public class NewBTree<T>
+    public class NewBTree<T> where T : IComparable
     {
         private NewNode<T> _root;
         private readonly NewIndexReader<T> _indexReader;

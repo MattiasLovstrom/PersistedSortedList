@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PersistedSortedList.Tests
 {
-    public class NewIndexReader<T>
+    public class NewIndexReader<T> where T : IComparable
     {
         private readonly IRepository<T> _repository;
         private const int DefaultFreeListSize = 32;

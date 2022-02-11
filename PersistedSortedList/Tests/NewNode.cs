@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace PersistedSortedList.Tests
 {
-    public class NewNode<T>
+    public class NewNode<T> where T : IComparable
     {
         public readonly List<int> Items;
         public readonly List<NewNode<T>> Children;
@@ -142,7 +143,7 @@ namespace PersistedSortedList.Tests
 
         private bool Less(int x, int y)
         {
-            return x < y;
+            return x.CompareTo(y) < 0;
         }
 
         public override string ToString()
