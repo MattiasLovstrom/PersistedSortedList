@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Caching;
+using PersistedSortedList.Tests;
 
 namespace PersistedSortedList
 {
@@ -13,14 +14,14 @@ namespace PersistedSortedList
         public PersistedSortedList(string name)
         {
             var cache = MemoryCache.Default;
-            _indexFile = new FileAdapter(name + ".index");
-            var indexReader = new IndexReader(
-                _indexFile,
-                cache);
 
             _repositoryFile = new FileAdapter(name + ".db");
-
             _repository = new Repository<T>(_repositoryFile, cache);
+
+            _indexFile = new FileAdapter(name + ".index");
+            var indexReader = new NewIndexReader<T>(
+                _repository);
+
             _index = new Index<T>(indexReader, _repository);
         }
 
@@ -35,7 +36,7 @@ namespace PersistedSortedList
         public void Add(T value)
         {
             var position = _repository.Add(value);
-            _index.Add(position, value);
+            _index.Add(position);
         }
 
         public T Get(T prototype)

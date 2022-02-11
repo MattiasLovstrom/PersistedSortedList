@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PersistedSortedList.Tests
 {
-    public class NewIndexReader<T> where T : IComparable
+    public class NewIndexReader<T> : INewIndexReader<T> where T : IComparable
     {
         private readonly IRepository<T> _repository;
         private const int DefaultFreeListSize = 32;

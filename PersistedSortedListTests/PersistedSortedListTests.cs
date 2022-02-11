@@ -30,7 +30,7 @@ namespace SortedFileList.Tests
 
             _testObject.Add(testItem);
             _repositoryMock.Verify(repository=>repository.Add(It.IsAny<TestItem>()));
-            _indexMock.Verify(index=>index.Add(It.IsAny<long>(), It.IsAny<TestItem>()));
+            _indexMock.Verify(index=>index.Add(It.IsAny<long>()));
         }
     }
 

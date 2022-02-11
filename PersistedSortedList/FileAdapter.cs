@@ -12,9 +12,15 @@ namespace PersistedSortedList
         public FileAdapter(string fileName)
         {
             _fileName = fileName;
-            _file = !File.Exists(fileName) 
-                ? File.Create(fileName) 
-                : File.Open(fileName, FileMode.Open);
+            if (!File.Exists(fileName))
+            {
+                _file = File.Create(fileName);
+                _file.WriteByte(13);
+            }
+            else
+            {
+                _file = File.Open(fileName, FileMode.Open);
+            }
         }
 
         public byte[] Read(long position, long length)

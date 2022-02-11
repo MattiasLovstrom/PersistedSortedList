@@ -6,17 +6,23 @@ namespace PersistedSortedList.Tests.Tests
     [TestClass()]
     public class BTreeTests
     {
-        [TestMethod]
-        public void ReplaceOrInsertTest()
+        private NewBTree<int> tr;
+
+        [TestInitialize]
+        public void Init()
         {
             var repositoryMock = new Mock<IRepository<int>>();
             repositoryMock.Setup(repository => repository.Get(It.IsAny<int>()))
                 .Returns((int i) => i);
             var indexReader = new NewIndexReader<int>(repositoryMock.Object);
-            var tr = new NewBTree<int>(2,
-                indexReader, 
+            tr = new NewBTree<int>(2,
+                indexReader,
                 repositoryMock.Object);
+        }
 
+        [TestMethod]
+        public void ReplaceOrInsertTest()
+        {
             tr.ReplaceOrInsert(1);
             tr.ReplaceOrInsert(2);
             tr.ReplaceOrInsert(3);
@@ -48,7 +54,7 @@ namespace PersistedSortedList.Tests.Tests
             tr.ReplaceOrInsert(6);
             tr.ReplaceOrInsert(7);
 
-            var node = tr.Get(4);
+            var node = tr.Get(new TestObject {Value = 4.ToString()});
             Assert.AreEqual("4", node.Value);
             Assert.AreEqual("Extra4", node.Extra);
         }

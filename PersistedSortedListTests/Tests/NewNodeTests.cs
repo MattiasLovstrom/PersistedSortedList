@@ -28,8 +28,8 @@ namespace PersistedSortedList.Tests.Tests
         [TestMethod]
         public void TryGetValueTest()
         {
-            _testObject.Items = new List<int>{0,1,2};
-            _testObject.TryGetValue(1, out var index);
+            _testObject.Items = new List<int> { 0, 1, 2 };
+            _testObject.TryGetReference(1, out var index);
 
             Assert.AreEqual(1, index);
         }
@@ -38,7 +38,7 @@ namespace PersistedSortedList.Tests.Tests
         public void TryGetNonExistingValueTest()
         {
             _testObject.Items = new List<int> { 0, 1, 4 };
-            Assert.IsFalse(_testObject.TryGetValue(3, out var index));
+            Assert.IsFalse(_testObject.TryGetReference(3, out var index));
 
             Assert.AreEqual(3, index);
         }

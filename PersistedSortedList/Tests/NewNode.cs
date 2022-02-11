@@ -22,7 +22,7 @@ namespace PersistedSortedList.Tests
             Children = new List<NewNode<T>>();
         }
 
-        public bool TryGetValue(int fileReference, out int index)
+        public bool TryGetReference(int fileReference, out int index)
         {
             for (index = 0; index < Items.Count; index++)
             {
@@ -35,36 +35,32 @@ namespace PersistedSortedList.Tests
             var searchFor = _repository.Get(fileReference);
             for (index = 0; index < Items.Count; index++)
             {
-                var item = _repository.Get(index);
+                var item = _repository.Get(Items[index]);
                 if (Less(searchFor, item))
                 {
                     return false;
                 }
             }
             return false;
+        }
 
-            //index = Items.BinarySearch(0, Items.Count, item, Comparer<int>.Default);
+        public bool TryGetValue(T prototype, out int index)
+        {
+            for (index = 0; index < Items.Count; index++)
+            {
+                var item = _repository.Get(Items[index]);
+                if (prototype.CompareTo(item) == 0)
+                {
+                    return true;
+                }
+            }
 
-            //var found = index >= 0;
-
-            //if (!found)
-            //{
-            //    index = ~index;
-            //}
-
-
-            //if (index <= 0 || Less(Items[index - 1], item))
-            //{
-            //    return found;
-            //}
-
-            //index--;
-            //return true;
+            return false;
         }
 
         public int Insert(int fileReference, int maxItems)
         {
-            if (TryGetValue(fileReference, out var i))
+            if (TryGetReference(fileReference, out var i))
             {
                 var n = Items[i];
                 Items[i] = fileReference;
@@ -99,16 +95,16 @@ namespace PersistedSortedList.Tests
             return MutableChild(i).Insert(fileReference, maxItems);
         }
 
-        public T Get(int key)
+        public T Get(T prototype)
         {
-            if (TryGetValue(key, out var i))
+            if (TryGetValue(prototype, out var i))
             {
                 return _repository.Get(Items[i]);
             }
 
             if (Children.Count > 0)
             {
-                return Children[i].Get(key);
+                return Children[i].Get(prototype);
             }
 
             return default;

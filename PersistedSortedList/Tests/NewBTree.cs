@@ -25,9 +25,9 @@ namespace PersistedSortedList.Tests
             _repository = repository;
         }
 
-        public T Get(int key)
+        public T Get(T prototype)
         {
-            return _root.Get(key);
+            return _root.Get(prototype);
         }
 
         public int ReplaceOrInsert(int item)
