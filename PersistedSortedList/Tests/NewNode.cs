@@ -22,7 +22,7 @@ namespace PersistedSortedList.Tests
             Children = new List<NewNode<T>>();
         }
 
-        public bool TryGetReference(int fileReference, out int index)
+        public bool TryGetIndexOfReference(int fileReference, out int index)
         {
             for (index = 0; index < Items.Count; index++)
             {
@@ -60,7 +60,7 @@ namespace PersistedSortedList.Tests
 
         public int Insert(int fileReference, int branchingFactor)
         {
-            if (TryGetReference(fileReference, out var i))
+            if (TryGetIndexOfReference(fileReference, out var i))
             {
                 var n = Items[i];
                 Items[i] = fileReference;
