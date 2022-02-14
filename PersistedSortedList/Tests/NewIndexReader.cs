@@ -27,5 +27,10 @@ namespace PersistedSortedList.Tests
         {
             return _list[reference];
         }
+
+        public void Update(NewNode<T> node)
+        {
+            Console.Out.WriteLine($"Update {node}");
+        }
     }
 }

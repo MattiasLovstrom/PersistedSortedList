@@ -6,5 +6,6 @@ namespace PersistedSortedList.Tests
     {
         NewNode<T> NewNode();
         NewNode<T> Get(int reference);
+        void Update(NewNode<T> root);
     }
 }

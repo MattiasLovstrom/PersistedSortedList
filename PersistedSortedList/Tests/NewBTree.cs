@@ -31,6 +31,7 @@ namespace PersistedSortedList.Tests
                 _root.Items.Add(fileReference);
                 Console.Out.WriteLine("Create root :" + _root);
                 Length++;
+                _indexReader.Update(_root);
                 return default;
             }
 
@@ -49,6 +50,7 @@ namespace PersistedSortedList.Tests
             {
                 Length++;
             }
+            //_indexReader.Update(_root);
             return result;
         }
 

@@ -9,7 +9,7 @@ namespace PersistedSortedList.Tests
     public class NewNode<T> where T : IComparable
     {
         public List<int> Items { get; set; }
-        public readonly List<int> Children;
+        public List<int> Children;
         private readonly INewIndexReader<T> _indexReader;
         private readonly IRepository<T> _repository;
         public int Position { get; set; }
@@ -66,12 +66,14 @@ namespace PersistedSortedList.Tests
             {
                 var n = Items[i];
                 Items[i] = fileReference;
+                _indexReader.Update(this);
                 Console.Out.WriteLine($"Insert {fileReference.ToString("X8")} in {this}");
                 return n;
             }
             if (Children.Count == 0)
             {
                 Items.Insert(i, fileReference);
+                _indexReader.Update(this);
                 Console.Out.WriteLine($"Insert {fileReference.ToString("X8")} in leaf {this}");
                 return default;
             }
@@ -96,11 +98,17 @@ namespace PersistedSortedList.Tests
                 {
                     var n = Items[i];
                     Items[i] = fileReference;
+                    _indexReader.Update(this);
                     Console.Out.WriteLine($"Insert {fileReference.ToString("X8")} in {this}");
                     return n;
                 }
             }
-            return _indexReader.Get(Children[i]).Insert(fileReference, branchingFactor);
+
+            var node = _indexReader.Get(Children[i]);
+            var inserted =  node.Insert(fileReference, branchingFactor);
+            _indexReader.Update(node);
+
+            return inserted;
         }
 
         public T Get(T prototype)
@@ -125,6 +133,7 @@ namespace PersistedSortedList.Tests
             var (item, second) = first.Split(maxItems / 2);
             Items.Insert(i, item);
             Children.Insert(i + 1, second.Position);
+            _indexReader.Update(this);
             Console.Out.WriteLine($"Split to {this} and {second}");
         }
 
@@ -143,6 +152,8 @@ namespace PersistedSortedList.Tests
                     Children.RemoveRange(i + 1, count);
                 }
             }
+            _indexReader.Update(next);
+            _indexReader.Update(this);
             return (item, next);
         }
 
