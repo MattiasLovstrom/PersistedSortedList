@@ -149,13 +149,12 @@ namespace PersistedSortedList.Tests
         [DebuggerStepThrough]
         public override string ToString()
         {
-            //[1<2>3]<4>[5<6>7]
             var message = new StringBuilder("");
             if (Items.Any())
             {
                 message
                     .Append("[")
-                    .Append(Items.Where(i=>i > 0).Select(i => _repository.Get(i).ToString()).Aggregate((c, n) => c + "," + n))
+                    .Append(Items.Select(i => _repository.Get(i).ToString()).Aggregate((c, n) => c + "," + n))
                     .Append("]");
             }
 
@@ -165,7 +164,7 @@ namespace PersistedSortedList.Tests
 
                 message
                     .Append("[")
-                    .Append(Children.Where(i=>i>0).Select(c => _indexReader.Get(c).ToString()).Aggregate((c, n) => c + "," + n))
+                    .Append(Children.Select(c => _indexReader.Get(c).ToString()).Aggregate((c, n) => c + "," + n))
                     .Append("]");
             }
 

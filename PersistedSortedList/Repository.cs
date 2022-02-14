@@ -16,7 +16,6 @@ namespace PersistedSortedList
         {
             _cache = cache;
             _fileAdapter = fileAdapter;
-            _last = 1;
         }
 
         public int Add(T value)

@@ -24,12 +24,7 @@ namespace PersistedSortedList.Tests
 
         public int Add(int fileReference)
         {
-            if (fileReference == default)
-            {
-                throw new ArgumentException("Can't be zero", nameof(fileReference));
-            }
-
-            Console.Out.WriteLine($"ReplaceOrInsert {fileReference.ToString("X8")} in {_root}");
+            Console.Out.WriteLine($"Add {fileReference.ToString("X8")} in {_root}");
             if (_root == null)
             {
                 _root = _indexReader.NewNode();
