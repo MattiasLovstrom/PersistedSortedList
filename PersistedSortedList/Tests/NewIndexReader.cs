@@ -17,7 +17,7 @@ namespace PersistedSortedList.Tests
         public NewNode<T> NewNode()
         {
             var newNode = new NewNode<T>(this, _repository);
-            newNode.Position = _list.Count + 1;
+            newNode.Position = _list.Count;
             _list.Add(newNode);
             
             return newNode;
@@ -25,7 +25,7 @@ namespace PersistedSortedList.Tests
 
         public NewNode<T> Get(int reference)
         {
-            return _list[reference-1];
+            return _list[reference];
         }
     }
 }
