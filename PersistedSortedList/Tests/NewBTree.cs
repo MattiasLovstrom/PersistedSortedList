@@ -6,7 +6,7 @@ namespace PersistedSortedList.Tests
     public class NewBTree<T> where T : IComparable
     {
         private NewNode<T> _root;
-        private readonly NewIndexReader<T> _indexReader;
+        private readonly INewIndexReader<T> _indexReader;
         private readonly IRepository<T> _repository;
         public int Length;
         private int BranchingFactor;
@@ -18,7 +18,10 @@ namespace PersistedSortedList.Tests
             _indexReader = new NewIndexReader<T>(_repository);
         }
 
-        public NewBTree(int branchingFactor, NewIndexReader<T> indexReader, IRepository<T> repository)
+        public NewBTree(
+            int branchingFactor, 
+            INewIndexReader<T> indexReader, 
+            IRepository<T> repository)
         {
             BranchingFactor = branchingFactor;
             _indexReader = indexReader;
@@ -37,23 +40,26 @@ namespace PersistedSortedList.Tests
                 throw new ArgumentException("Can't be zero", nameof(fileReference));
             }
 
+            Console.Out.WriteLine($"ReplaceOrInsert {fileReference.ToString("X8")} in {_root}");
             if (_root == null)
             {
                 _root = _indexReader.NewNode();
                 _root.Items.Add(fileReference);
+                Console.Out.WriteLine("Create root :" + _root);
                 Length++;
                 return default;
             }
 
-            _root = _root.MutableFor(_indexReader);
+            //_root = _root.MutableFor(_indexReader);
             if (_root.Items.Count >= BranchingFactor)
             {
                 var (item2, second) = _root.Split(BranchingFactor / 2);
                 var oldRoot = _root;
                 _root = _indexReader.NewNode();
                 _root.Items.Add(item2);
-                _root.Children.Add(oldRoot);
-                _root.Children.Add(second);
+                _root.Children.Add(oldRoot.Position);
+                _root.Children.Add(second.Position);
+                Console.Out.WriteLine("New root :" + _root);
             }
             var result = _root.Insert(fileReference, BranchingFactor);
             if (result == default)
@@ -68,7 +74,8 @@ namespace PersistedSortedList.Tests
             Console.Out.WriteLine(current);
             foreach (var child in current.Children)
             {
-                Print(child, level++);
+                var node = _indexReader.Get(child);
+                Print(node, level++);
             }
         }
     }

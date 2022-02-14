@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -8,18 +9,19 @@ namespace PersistedSortedList.Tests
     public class NewNode<T> where T : IComparable
     {
         public List<int> Items { get; set; }
-        public readonly List<NewNode<T>> Children;
-        private readonly NewIndexReader<T> _indexReader;
+        public readonly List<int> Children;
+        private readonly INewIndexReader<T> _indexReader;
         private readonly IRepository<T> _repository;
+        public int Position { get; set; }
 
         public NewNode(
-            NewIndexReader<T> indexReader,
+            INewIndexReader<T> indexReader,
             IRepository<T> repository)
         {
             _indexReader = indexReader;
             _repository = repository;
             Items = new List<int>();
-            Children = new List<NewNode<T>>();
+            Children = new List<int>();
         }
 
         public bool TryGetIndexOfReference(int fileReference, out int index)
@@ -36,7 +38,7 @@ namespace PersistedSortedList.Tests
             for (index = 0; index < Items.Count; index++)
             {
                 var item = _repository.Get(Items[index]);
-                if (Less(searchFor, item))
+                if (searchFor.CompareTo(item) < 0)
                 {
                     return false;
                 }
@@ -64,24 +66,29 @@ namespace PersistedSortedList.Tests
             {
                 var n = Items[i];
                 Items[i] = fileReference;
+                Console.Out.WriteLine($"Insert {fileReference.ToString("X8")} in {this}");
                 return n;
             }
             if (Children.Count == 0)
             {
                 Items.Insert(i, fileReference);
+                Console.Out.WriteLine($"Insert {fileReference.ToString("X8")} in leaf {this}");
                 return default;
             }
-            if (MaybeSplitChild(i, branchingFactor))
+
+            var child = _indexReader.Get(Children[i]);
+            if (child.Items.Count >= branchingFactor)
             {
+                SplitChild(i, branchingFactor);
                 var inTree = Items[i];
                 var item = _repository.Get(fileReference);
                 var inTreeItem = _repository.Get(inTree);
 
-                if (Less(item, inTreeItem))
+                if (item.CompareTo(inTreeItem) < 0)
                 {
                     // no change, we want first split node
                 }
-                else if (Less(inTreeItem, item))
+                else if (inTreeItem.CompareTo(item) < 0)
                 {
                     i++; // we want second split node
                 }
@@ -89,10 +96,11 @@ namespace PersistedSortedList.Tests
                 {
                     var n = Items[i];
                     Items[i] = fileReference;
+                    Console.Out.WriteLine($"Insert {fileReference.ToString("X8")} in {this}");
                     return n;
                 }
             }
-            return MutableChild(i).Insert(fileReference, branchingFactor);
+            return _indexReader.Get(Children[i]).Insert(fileReference, branchingFactor);
         }
 
         public T Get(T prototype)
@@ -104,44 +112,20 @@ namespace PersistedSortedList.Tests
 
             if (Children.Count > 0)
             {
-                return Children[i].Get(prototype);
+                var child = _indexReader.Get(Children[i]);
+                return child.Get(prototype);
             }
 
             return default;
         }
-        public bool MaybeSplitChild(int i, int maxItems)
+        public void SplitChild(int i, int maxItems)
         {
-            if (Children[i].Items.Count < maxItems)
-            {
-                return false;
-            }
-            var first = MutableChild(i);
+            var first = _indexReader.Get(Children[i]);
+            Console.Out.WriteLine($"Split child {i} {first}");
             var (item, second) = first.Split(maxItems / 2);
             Items.Insert(i, item);
-            Children.Insert(i + 1, second);
-            return true;
-        }
-
-        public NewNode<T> MutableChild(int i)
-        {
-            var c = Children[i].MutableFor(_indexReader);
-            Children[i] = c;
-            return c;
-        }
-
-        public NewNode<T> MutableFor(NewIndexReader<T> cow)
-        {
-            if (ReferenceEquals(_indexReader, cow))
-            {
-                return this;
-            }
-
-            var node = _indexReader.NewNode();
-
-            node.Items.AddRange(Items);
-            node.Children.AddRange(Children);
-
-            return node;
+            Children.Insert(i + 1, second.Position);
+            Console.Out.WriteLine($"Split to {this} and {second}");
         }
 
         public (int item, NewNode<T> node) Split(int i)
@@ -162,18 +146,16 @@ namespace PersistedSortedList.Tests
             return (item, next);
         }
 
-        private bool Less(T x, T y)
-        {
-            return x.CompareTo(y) < 0;
-        }
-
+        [DebuggerStepThrough]
         public override string ToString()
         {
             //[1<2>3]<4>[5<6>7]
             var message = new StringBuilder("");
             if (Items.Any())
             {
-                message.Append(Items.Select(i => i.ToString()).Aggregate((c, n) => c + "," + n))
+                message
+                    .Append("[")
+                    .Append(Items.Where(i=>i > 0).Select(i => _repository.Get(i).ToString()).Aggregate((c, n) => c + "," + n))
                     .Append("]");
             }
 
@@ -181,7 +163,9 @@ namespace PersistedSortedList.Tests
             {
                 message.Append("=>");
 
-                message.Append(Children.Select(c => c.ToString()).Aggregate((c, n) => c + "," + n))
+                message
+                    .Append("[")
+                    .Append(Children.Where(i=>i>0).Select(c => _indexReader.Get(c).ToString()).Aggregate((c, n) => c + "," + n))
                     .Append("]");
             }
 

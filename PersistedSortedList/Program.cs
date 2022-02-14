@@ -109,5 +109,10 @@ namespace PersistedSortedList
         {
             return Value.CompareTo(((TestObject)obj).Value);
         }
+
+        public override string ToString()
+        {
+            return Value;
+        }
     }
 }

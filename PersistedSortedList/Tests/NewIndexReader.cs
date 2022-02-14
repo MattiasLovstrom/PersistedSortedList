@@ -10,32 +10,28 @@ namespace PersistedSortedList.Tests
 
         private readonly object _lockObject;
         private readonly List<NewNode<T>> _freelist;
+        private readonly List<NewNode<T>> _list;
 
         public NewIndexReader(IRepository<T> repository)
         {
             _repository = repository;
             _lockObject = new object();
             _freelist = new List<NewNode<T>>(DefaultFreeListSize);
+            _list = new List<NewNode<T>>();
         }
-        
+
         public NewNode<T> NewNode()
         {
-            lock (_lockObject)
-            {
-                var index = _freelist.Count - 1;
+            var newNode = new NewNode<T>(this, _repository);
+            newNode.Position = _list.Count + 1;
+            _list.Add(newNode);
+            
+            return newNode;
+        }
 
-                if (index < 0)
-                {
-                    return new NewNode<T>(this, _repository);
-                }
-
-                var n = _freelist[index];
-
-                _freelist[index] = null;
-                _freelist.RemoveAt(index);
-
-                return n;
-            }
+        public NewNode<T> Get(int reference)
+        {
+            return _list[reference-1];
         }
     }
 }

@@ -14,10 +14,10 @@ namespace PersistedSortedList
         private readonly IRepository<T> _repository;
         private NewBTree<T> _tree;
 
-        public Index(NewIndexReader<T> indexReader, IRepository<T> repository)
+        public Index(INewIndexReader<T> indexReader, IRepository<T> repository)
         {
             _repository = repository;
-            _tree = new NewBTree<T>(2,indexReader,repository);
+            _tree = new NewBTree<T>(3,indexReader,repository);
         }
 
         public void Add(long fileReference)

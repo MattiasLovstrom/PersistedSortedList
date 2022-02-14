@@ -39,10 +39,12 @@ namespace PersistedSortedList.Tests.Tests
         public void ReplaceOrInsertComplexTest()
         {
             var repositoryMock = new Mock<IRepository<TestObject>>();
-            repositoryMock.Setup(repository => repository.Get(It.IsAny<int>()))
+            repositoryMock
+                .Setup(repository => repository.Get(It.IsAny<int>()))
                 .Returns((int i) => new TestObject{Value = i.ToString(), Extra = $"Extra{i}"});
             var indexReader = new NewIndexReader<TestObject>(repositoryMock.Object);
-            var tr = new NewBTree<TestObject>(2,
+
+            var tr = new NewBTree<TestObject>(3,
                 indexReader,
                 repositoryMock.Object);
 
@@ -58,6 +60,5 @@ namespace PersistedSortedList.Tests.Tests
             Assert.AreEqual("4", node.Value);
             Assert.AreEqual("Extra4", node.Extra);
         }
-
     }
 }
