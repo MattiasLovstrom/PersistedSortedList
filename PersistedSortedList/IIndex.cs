@@ -17,12 +17,12 @@ namespace PersistedSortedList
         public Index(INewIndexReader<T> indexReader, IRepository<T> repository)
         {
             _repository = repository;
-            _tree = new NewBTree<T>(3,indexReader,repository);
+            _tree = new NewBTree<T>(3,indexReader);
         }
 
         public void Add(long fileReference)
         {
-            _tree.ReplaceOrInsert((int)fileReference);
+            _tree.Add((int)fileReference);
         }
 
         public T Get(T prototype)

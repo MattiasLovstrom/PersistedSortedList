@@ -16,20 +16,19 @@ namespace PersistedSortedList.Tests.Tests
                 .Returns((int i) => i);
             var indexReader = new NewIndexReader<int>(repositoryMock.Object);
             tr = new NewBTree<int>(2,
-                indexReader,
-                repositoryMock.Object);
+                indexReader);
         }
 
         [TestMethod]
         public void ReplaceOrInsertTest()
         {
-            tr.ReplaceOrInsert(1);
-            tr.ReplaceOrInsert(2);
-            tr.ReplaceOrInsert(3);
-            tr.ReplaceOrInsert(4);
-            tr.ReplaceOrInsert(5);
-            tr.ReplaceOrInsert(6);
-            tr.ReplaceOrInsert(7);
+            tr.Add(1);
+            tr.Add(2);
+            tr.Add(3);
+            tr.Add(4);
+            tr.Add(5);
+            tr.Add(6);
+            tr.Add(7);
 
             var node = tr.Get(4);
             Assert.AreEqual("4", node.ToString());
@@ -45,16 +44,15 @@ namespace PersistedSortedList.Tests.Tests
             var indexReader = new NewIndexReader<TestObject>(repositoryMock.Object);
 
             var tr = new NewBTree<TestObject>(3,
-                indexReader,
-                repositoryMock.Object);
+                indexReader);
 
-            tr.ReplaceOrInsert(1);
-            tr.ReplaceOrInsert(2);
-            tr.ReplaceOrInsert(3);
-            tr.ReplaceOrInsert(4);
-            tr.ReplaceOrInsert(5);
-            tr.ReplaceOrInsert(6);
-            tr.ReplaceOrInsert(7);
+            tr.Add(1);
+            tr.Add(2);
+            tr.Add(3);
+            tr.Add(4);
+            tr.Add(5);
+            tr.Add(6);
+            tr.Add(7);
 
             var node = tr.Get(new TestObject {Value = 4.ToString()});
             Assert.AreEqual("4", node.Value);

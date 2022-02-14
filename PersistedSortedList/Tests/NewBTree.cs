@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Caching;
 
 namespace PersistedSortedList.Tests
 {
@@ -7,25 +6,15 @@ namespace PersistedSortedList.Tests
     {
         private NewNode<T> _root;
         private readonly INewIndexReader<T> _indexReader;
-        private readonly IRepository<T> _repository;
         public int Length;
         private int BranchingFactor;
 
-        public NewBTree(int branchingFactor)
-        {
-            BranchingFactor = branchingFactor;
-            _repository = new Repository<T>(new FileAdapter("test"), MemoryCache.Default);
-            _indexReader = new NewIndexReader<T>(_repository);
-        }
-
         public NewBTree(
             int branchingFactor, 
-            INewIndexReader<T> indexReader, 
-            IRepository<T> repository)
+            INewIndexReader<T> indexReader)
         {
             BranchingFactor = branchingFactor;
             _indexReader = indexReader;
-            _repository = repository;
         }
 
         public T Get(T prototype)
@@ -33,7 +22,7 @@ namespace PersistedSortedList.Tests
             return _root.Get(prototype);
         }
 
-        public int ReplaceOrInsert(int fileReference)
+        public int Add(int fileReference)
         {
             if (fileReference == default)
             {
@@ -50,7 +39,6 @@ namespace PersistedSortedList.Tests
                 return default;
             }
 
-            //_root = _root.MutableFor(_indexReader);
             if (_root.Items.Count >= BranchingFactor)
             {
                 var (item2, second) = _root.Split(BranchingFactor / 2);
