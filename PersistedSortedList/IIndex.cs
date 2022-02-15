@@ -17,7 +17,7 @@ namespace PersistedSortedList
         public Index(INewIndexReader<T> indexReader, IRepository<T> repository)
         {
             _repository = repository;
-            _tree = new NewBTree<T>(3,indexReader);
+            _tree = new NewBTree<T>(indexReader);
         }
 
         public void Add(long fileReference)

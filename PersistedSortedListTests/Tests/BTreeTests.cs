@@ -14,9 +14,8 @@ namespace PersistedSortedList.Tests.Tests
             var repositoryMock = new Mock<IRepository<int>>();
             repositoryMock.Setup(repository => repository.Get(It.IsAny<int>()))
                 .Returns((int i) => i);
-            var indexReader = new NewIndexReader<int>(repositoryMock.Object);
-            tr = new NewBTree<int>(2,
-                indexReader);
+            var indexReader = new NewIndexReader<int>(repositoryMock.Object, new Mock<IFileAdapter>().Object);
+            tr = new NewBTree<int>(indexReader);
         }
 
         [TestMethod]
@@ -41,10 +40,9 @@ namespace PersistedSortedList.Tests.Tests
             repositoryMock
                 .Setup(repository => repository.Get(It.IsAny<int>()))
                 .Returns((int i) => new TestObject{Value = i.ToString(), Extra = $"Extra{i}"});
-            var indexReader = new NewIndexReader<TestObject>(repositoryMock.Object);
+            var indexReader = new NewIndexReader<TestObject>(repositoryMock.Object, new Mock<IFileAdapter>().Object);
 
-            var tr = new NewBTree<TestObject>(3,
-                indexReader);
+            var tr = new NewBTree<TestObject>(indexReader);
 
             tr.Add(1);
             tr.Add(2);

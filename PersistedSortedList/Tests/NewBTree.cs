@@ -7,13 +7,9 @@ namespace PersistedSortedList.Tests
         private NewNode<T> _root;
         private readonly INewIndexReader<T> _indexReader;
         public int Length;
-        private int BranchingFactor;
-
-        public NewBTree(
-            int branchingFactor, 
-            INewIndexReader<T> indexReader)
+        
+        public NewBTree(INewIndexReader<T> indexReader)
         {
-            BranchingFactor = branchingFactor;
             _indexReader = indexReader;
         }
 
@@ -35,17 +31,22 @@ namespace PersistedSortedList.Tests
                 return default;
             }
 
-            if (_root.Items.Count >= BranchingFactor)
+            if (_root.Items.Count >= Constants.BranchingFactor)
             {
-                var (item2, second) = _root.Split(BranchingFactor / 2);
+                var (item2, second) = _root.Split(Constants.BranchingFactor / 2);
                 var oldRoot = _root;
+                var oldRootPosition = oldRoot.Position;
                 _root = _indexReader.NewNode();
+                oldRoot.Position = _root.Position;
+                _root.Position = oldRootPosition;
                 _root.Items.Add(item2);
-                _root.Children.Add(oldRoot.Position);
+                _root.Children.Add(oldRootPosition);
                 _root.Children.Add(second.Position);
+                _indexReader.Update(_root);
+                _indexReader.Update(oldRoot);
                 Console.Out.WriteLine("New root :" + _root);
             }
-            var result = _root.Insert(fileReference, BranchingFactor);
+            var result = _root.Insert(fileReference, Constants.BranchingFactor);
             if (result == default)
             {
                 Length++;

@@ -18,7 +18,7 @@ namespace PersistedSortedList.Tests.Tests
             var repositoryMock = new Mock<IRepository<int>>();
             repositoryMock.Setup(repository => repository.Get(It.IsAny<int>()))
                 .Returns((int i) => i);
-            var indexReader = new NewIndexReader<int>(repositoryMock.Object);
+            var indexReader = new NewIndexReader<int>(repositoryMock.Object, new Mock<IFileAdapter>().Object);
 
             _testObject = new NewNode<int>(
                 indexReader,

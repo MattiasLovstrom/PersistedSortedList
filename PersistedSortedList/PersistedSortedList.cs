@@ -6,6 +6,8 @@ namespace PersistedSortedList
 {
     public class PersistedSortedList<T> : IDisposable where T : IComparable
     {
+       
+
         private readonly IIndex<T> _index;
         private readonly IRepository<T> _repository;
         private FileAdapter _repositoryFile;
@@ -20,7 +22,8 @@ namespace PersistedSortedList
 
             _indexFile = new FileAdapter(name + ".index");
             var indexReader = new NewIndexReader<T>(
-                _repository);
+                _repository,
+                _indexFile);
 
             _index = new Index<T>(indexReader, _repository);
         }

@@ -8,6 +8,7 @@ namespace PersistedSortedList.Tests
 {
     public class NewNode<T> where T : IComparable
     {
+        
         public List<int> Items { get; set; }
         public List<int> Children;
         private readonly INewIndexReader<T> _indexReader;
@@ -133,7 +134,7 @@ namespace PersistedSortedList.Tests
             var (item, second) = first.Split(maxItems / 2);
             Items.Insert(i, item);
             Children.Insert(i + 1, second.Position);
-            _indexReader.Update(this);
+            //_indexReader.Update(this);
             Console.Out.WriteLine($"Split to {this} and {second}");
         }
 
