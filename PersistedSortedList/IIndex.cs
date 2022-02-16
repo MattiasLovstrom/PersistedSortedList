@@ -12,12 +12,12 @@ namespace PersistedSortedList
     public class Index<T> : IIndex<T> where T : IComparable
     {
         private readonly IRepository<T> _repository;
-        private NewBTree<T> _tree;
+        private BTree<T> _tree;
 
-        public Index(INewIndexReader<T> indexReader, IRepository<T> repository)
+        public Index(IIndexReader<T> indexReader, IRepository<T> repository)
         {
             _repository = repository;
-            _tree = new NewBTree<T>(indexReader);
+            _tree = new BTree<T>(indexReader);
         }
 
         public void Add(long fileReference)

@@ -1,9 +1,11 @@
-﻿namespace PersistedSortedList
+﻿using System;
+
+namespace PersistedSortedList.Tests
 {
-    public interface IIndexReader
+    public interface IIndexReader<T> where T : IComparable
     {
-        Node1 Create(int parent);
-        Node1 Get(int reference);
-        void Update(Node1 node);
+        Node<T> NewNode();
+        Node<T> Get(int reference);
+        void Update(Node<T> root);
     }
 }

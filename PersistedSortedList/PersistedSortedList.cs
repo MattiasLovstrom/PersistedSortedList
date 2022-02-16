@@ -21,7 +21,7 @@ namespace PersistedSortedList
             _repository = new Repository<T>(_repositoryFile, cache);
 
             _indexFile = new FileAdapter(name + ".index");
-            var indexReader = new NewIndexReader<T>(
+            var indexReader = new IndexReader<T>(
                 _repository,
                 _indexFile);
 

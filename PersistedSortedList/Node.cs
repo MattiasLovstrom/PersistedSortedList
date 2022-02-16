@@ -6,17 +6,17 @@ using System.Text;
 
 namespace PersistedSortedList.Tests
 {
-    public class NewNode<T> where T : IComparable
+    public class Node<T> where T : IComparable
     {
         
         public List<int> Items { get; set; }
         public List<int> Children;
-        private readonly INewIndexReader<T> _indexReader;
+        private readonly IIndexReader<T> _indexReader;
         private readonly IRepository<T> _repository;
         public int Position { get; set; }
 
-        public NewNode(
-            INewIndexReader<T> indexReader,
+        public Node(
+            IIndexReader<T> indexReader,
             IRepository<T> repository)
         {
             _indexReader = indexReader;
@@ -138,7 +138,7 @@ namespace PersistedSortedList.Tests
             Console.Out.WriteLine($"Split to {this} and {second}");
         }
 
-        public (int item, NewNode<T> node) Split(int i)
+        public (int item, Node<T> node) Split(int i)
         {
             var item = Items[i];
             var next = _indexReader.NewNode();

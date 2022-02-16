@@ -8,9 +8,9 @@ using Moq;
 namespace PersistedSortedList.Tests.Tests
 {
     [TestClass]
-    public class NewNodeTests
+    public class NodeTests
     {
-        private NewNode<int> _testObject;
+        private Node<int> _testObject;
 
         [TestInitialize]
         public void Init()
@@ -18,9 +18,9 @@ namespace PersistedSortedList.Tests.Tests
             var repositoryMock = new Mock<IRepository<int>>();
             repositoryMock.Setup(repository => repository.Get(It.IsAny<int>()))
                 .Returns((int i) => i);
-            var indexReader = new NewIndexReader<int>(repositoryMock.Object, new Mock<IFileAdapter>().Object);
+            var indexReader = new IndexReader<int>(repositoryMock.Object, new Mock<IFileAdapter>().Object);
 
-            _testObject = new NewNode<int>(
+            _testObject = new Node<int>(
                 indexReader,
                 repositoryMock.Object);
         }

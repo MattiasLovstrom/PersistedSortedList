@@ -17,7 +17,7 @@ namespace PersistedSortedList
             File.Delete("repository.db");
             File.Delete("repository.index");
             FunctionTest();
-            //PerformenceTest();
+            PerformenceTest();
         }
 
         private static void PerformenceTest()
@@ -49,13 +49,14 @@ namespace PersistedSortedList
         private static void TestPersistedList(int count)
         {
             var rnd = new Random();
-            using var list = new PersistedSortedList<TestObject>("perf");
-
             var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            for (int i = 0; i < count; i++)
+            using (var list = new PersistedSortedList<TestObject>("perf"))
             {
-                list.Add(new TestObject { Value = rnd.NextDouble().ToString() });
+                stopwatch.Start();
+                for (int i = 0; i < count; i++)
+                {
+                    list.Add(new TestObject { Value = rnd.NextDouble().ToString() });
+                }
             }
 
             Console.Out.WriteLine($"Adding {count} took {stopwatch.ElapsedMilliseconds}ms");
@@ -92,7 +93,7 @@ namespace PersistedSortedList
 
             using var file1 = new FileAdapter("repository.index");
             position = 0;
-            while ((b = file1.Read(position, Constants.NodeLength+1)) != null)
+            while ((b = file1.Read(position, Constants.NodeLength + 1)) != null)
             {
                 Console.Out.WriteLine(position.ToString("X8") + " " + Encoding.UTF8.GetString(b));
                 position += b.Length;

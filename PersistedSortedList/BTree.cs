@@ -2,13 +2,13 @@
 
 namespace PersistedSortedList.Tests
 {
-    public class NewBTree<T> where T : IComparable
+    public class BTree<T> where T : IComparable
     {
-        private NewNode<T> _root;
-        private readonly INewIndexReader<T> _indexReader;
+        private Node<T> _root;
+        private readonly IIndexReader<T> _indexReader;
         public int Length;
         
-        public NewBTree(INewIndexReader<T> indexReader)
+        public BTree(IIndexReader<T> indexReader)
         {
             _indexReader = indexReader;
         }
@@ -55,7 +55,7 @@ namespace PersistedSortedList.Tests
             return result;
         }
 
-        public void Print(NewNode<T> current, int level = 0)
+        public void Print(Node<T> current, int level = 0)
         {
             Console.Out.WriteLine(current);
             foreach (var child in current.Children)

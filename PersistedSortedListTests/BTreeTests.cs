@@ -1,18 +1,60 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 
-// ReSharper disable once CheckNamespace
-namespace PersistedSortedList.Tests
+namespace PersistedSortedList.Tests.Tests
 {
-    [TestClass]
+    [TestClass()]
     public class BTreeTests
     {
-        [TestMethod]
-        public void SerializeTest()
-        {
-            var node = new Node1 { Values = { [0] = 10 } };
-            var deserializeNode = Node1.DeserializeNode(Node1.Serialize(node));
+        private BTree<int> tr;
 
-            Assert.AreEqual(node.Values[0], deserializeNode.Values[0]);
+        [TestInitialize]
+        public void Init()
+        {
+            var repositoryMock = new Mock<IRepository<int>>();
+            repositoryMock.Setup(repository => repository.Get(It.IsAny<int>()))
+                .Returns((int i) => i);
+            var indexReader = new IndexReader<int>(repositoryMock.Object, new Mock<IFileAdapter>().Object);
+            tr = new BTree<int>(indexReader);
+        }
+
+        [TestMethod]
+        public void ReplaceOrInsertTest()
+        {
+            tr.Add(1);
+            tr.Add(2);
+            tr.Add(3);
+            tr.Add(4);
+            tr.Add(5);
+            tr.Add(6);
+            tr.Add(7);
+
+            var node = tr.Get(4);
+            Assert.AreEqual("4", node.ToString());
+        }
+
+        [TestMethod]
+        public void ReplaceOrInsertComplexTest()
+        {
+            var repositoryMock = new Mock<IRepository<TestObject>>();
+            repositoryMock
+                .Setup(repository => repository.Get(It.IsAny<int>()))
+                .Returns((int i) => new TestObject{Value = i.ToString(), Extra = $"Extra{i}"});
+            var indexReader = new IndexReader<TestObject>(repositoryMock.Object, new Mock<IFileAdapter>().Object);
+
+            var tr = new BTree<TestObject>(indexReader);
+
+            tr.Add(1);
+            tr.Add(2);
+            tr.Add(3);
+            tr.Add(4);
+            tr.Add(5);
+            tr.Add(6);
+            tr.Add(7);
+
+            var node = tr.Get(new TestObject {Value = 4.ToString()});
+            Assert.AreEqual("4", node.Value);
+            Assert.AreEqual("Extra4", node.Extra);
         }
     }
 }
