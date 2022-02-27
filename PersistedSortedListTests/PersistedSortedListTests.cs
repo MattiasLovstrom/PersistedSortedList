@@ -11,14 +11,14 @@ namespace SortedFileList.Tests
     public class PersistedSortedListTests
     {
         private PersistedSortedList<TestItem> _testObject;
-        private Mock<BTree<TestItem>> _indexMock;
+        private Mock<IBTree<TestItem>> _indexMock;
         private Mock<IRepository<TestItem>> _repositoryMock;
 
         [TestInitialize]
         public void Init()
         {
             _repositoryMock = new Mock<IRepository<TestItem>>();
-            _indexMock = new Mock<BTree<TestItem>>();
+            _indexMock = new Mock<IBTree<TestItem>>();
             _testObject = new PersistedSortedList<TestItem>(
                 _repositoryMock.Object,
                 _indexMock.Object);

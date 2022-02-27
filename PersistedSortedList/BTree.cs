@@ -2,7 +2,7 @@
 
 namespace PersistedSortedList.Tests
 {
-    public class BTree<T> : IDisposable where T : IComparable
+    public class BTree<T> : IBTree<T>, IDisposable where T : IComparable
     {
         private Node<T> _root;
         public readonly IIndexReader<T> _indexReader;

@@ -8,7 +8,7 @@ namespace PersistedSortedList
     {
        
 
-        private readonly BTree<T> _index;
+        private readonly IBTree<T> _index;
         private readonly IRepository<T> _repository;
         private readonly FileAdapter _repositoryFile;
         private readonly FileAdapter _indexFile;
@@ -30,7 +30,7 @@ namespace PersistedSortedList
 
         public PersistedSortedList(
             IRepository<T> repository,
-            BTree<T> index)
+            IBTree<T> index)
         {
             _repository = repository;
             _index = index;
