@@ -42,6 +42,11 @@ namespace PersistedSortedList
             _index.Add(position);
         }
 
+        internal void Commit()
+        {
+            _index.Commit();
+        }
+
         public T Get(T prototype)
         {
             return _index.Get(prototype);

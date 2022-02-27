@@ -4,5 +4,6 @@
     {
         T Get(T prototype);
         int Add(int fileReference);
+        void Commit();
     }
 }

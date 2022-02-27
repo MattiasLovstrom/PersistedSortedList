@@ -31,6 +31,7 @@ namespace PersistedSortedList
                 list.Add(new TestObject { Value = "5" });
                 list.Add(new TestObject { Value = "6" });
                 list.Add(new TestObject { Value = "7" });
+                list.Commit();
             }
 
             using (var list1 = new PersistedSortedList<TestObject>("repository"))

@@ -7,5 +7,7 @@ namespace PersistedSortedList.Tests
         Node<T> NewNode();
         Node<T> Get(int reference);
         void Update(Node<T> root);
+        void Commit();
+        void RollBack();
     }
 }

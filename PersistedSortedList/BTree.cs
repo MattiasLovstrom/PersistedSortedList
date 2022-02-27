@@ -69,5 +69,10 @@ namespace PersistedSortedList.Tests
         public void Dispose()
         {
         }
+
+        void IBTree<T>.Commit()
+        {
+            _indexReader.Commit();
+        }
     }
 }

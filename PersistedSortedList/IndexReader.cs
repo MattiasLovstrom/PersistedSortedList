@@ -11,7 +11,7 @@ namespace PersistedSortedList.Tests
     {
         public readonly IRepository<T> _repository;
         private readonly IFileAdapter _indexFile;
-        private readonly List<Node<T>> _list;
+        private readonly List<Node<T>> _transactions;
         private MemoryCache _cache;
 
         public IndexReader(
@@ -20,7 +20,7 @@ namespace PersistedSortedList.Tests
         {
             _repository = repository;
             _indexFile = indexFile;
-            _list = new List<Node<T>>();
+            _transactions = new List<Node<T>>();
             _cache = MemoryCache.Default;
         }
 
@@ -31,8 +31,8 @@ namespace PersistedSortedList.Tests
                 Position = (int)_indexFile.Last
             };
             _cache.Add(new CacheItem(node.Position.ToString(), node), new CacheItemPolicy {SlidingExpiration = TimeSpan.FromMinutes(1)});
-            _indexFile.Write(_indexFile.Last, Serialize(node));
-            
+            //_indexFile.Write(node.Position, Serialize(node));
+            _transactions.Add(node);
             return node;
         }
 
@@ -42,6 +42,11 @@ namespace PersistedSortedList.Tests
             {
                 cached.Position = reference;
                 return cached;
+            }
+
+            foreach(var transaction in _transactions)
+            {
+                if (transaction.Position == reference) return transaction;
             }
 
             if (reference >= _indexFile.Last) return null;
@@ -55,10 +60,23 @@ namespace PersistedSortedList.Tests
 
         public void Update(Node<T> node)
         {
-            var serialize = Serialize(node);
-            Console.Out.WriteLine("Update " + node.Position.ToString("X8") + " " + Encoding.UTF8.GetString(serialize));
-            _indexFile.Write(node.Position, serialize);
+            Console.Out.WriteLine("Update " + node.Position.ToString("X8"));
+            //_indexFile.Write(node.Position, serialize);
+            _transactions.Add(node);
             _cache.Add(new CacheItem(node.Position.ToString(), node), new CacheItemPolicy { SlidingExpiration = TimeSpan.FromMinutes(1) });
+        }
+
+        public void Commit()
+        {
+            foreach(var transaction in _transactions)
+            {
+                _indexFile.Write(transaction.Position, Serialize(transaction));
+            }
+        }
+
+        public void RollBack()
+        {
+            _transactions.Clear();
         }
 
         private Node<T> Deserialize(byte[] block)
