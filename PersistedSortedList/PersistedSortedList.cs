@@ -8,10 +8,10 @@ namespace PersistedSortedList
     {
        
 
-        private readonly IIndex<T> _index;
+        private readonly BTree<T> _index;
         private readonly IRepository<T> _repository;
-        private FileAdapter _repositoryFile;
-        private FileAdapter _indexFile;
+        private readonly FileAdapter _repositoryFile;
+        private readonly FileAdapter _indexFile;
 
         public PersistedSortedList(string name)
         {
@@ -25,12 +25,12 @@ namespace PersistedSortedList
                 _repository,
                 _indexFile);
 
-            _index = new Index<T>(indexReader, _repository);
+            _index = new BTree<T>(indexReader);
         }
 
         public PersistedSortedList(
             IRepository<T> repository,
-            IIndex<T> index)
+            BTree<T> index)
         {
             _repository = repository;
             _index = index;

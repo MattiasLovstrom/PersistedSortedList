@@ -2,6 +2,7 @@
 using Moq;
 using System;
 using PersistedSortedList;
+using PersistedSortedList.Tests;
 
 // ReSharper disable once CheckNamespace
 namespace SortedFileList.Tests
@@ -10,14 +11,14 @@ namespace SortedFileList.Tests
     public class PersistedSortedListTests
     {
         private PersistedSortedList<TestItem> _testObject;
-        private Mock<IIndex<TestItem>> _indexMock;
+        private Mock<BTree<TestItem>> _indexMock;
         private Mock<IRepository<TestItem>> _repositoryMock;
 
         [TestInitialize]
         public void Init()
         {
             _repositoryMock = new Mock<IRepository<TestItem>>();
-            _indexMock = new Mock<IIndex<TestItem>>();
+            _indexMock = new Mock<BTree<TestItem>>();
             _testObject = new PersistedSortedList<TestItem>(
                 _repositoryMock.Object,
                 _indexMock.Object);
@@ -30,7 +31,7 @@ namespace SortedFileList.Tests
 
             _testObject.Add(testItem);
             _repositoryMock.Verify(repository=>repository.Add(It.IsAny<TestItem>()));
-            _indexMock.Verify(index=>index.Add(It.IsAny<long>()));
+            _indexMock.Verify(index=>index.Add(It.IsAny<int>()));
         }
     }
 

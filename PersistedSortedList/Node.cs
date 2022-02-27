@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PersistedSortedList.Tests
 {
-    public class Node<T> where T : IComparable
+    public class Node<T> : IDisposable where T : IComparable
     {
         
         public List<int> Items { get; set; }
@@ -55,6 +55,10 @@ namespace PersistedSortedList.Tests
                 if (prototype.CompareTo(item) == 0)
                 {
                     return true;
+                }
+                if (prototype.CompareTo(item) < 0)
+                {
+                    return false;
                 }
             }
 
@@ -181,6 +185,12 @@ namespace PersistedSortedList.Tests
             }
 
             return message.ToString();
+        }
+
+        public void Dispose()
+        {
+            _indexReader?.Dispose();
+            _repository?.Dispose();
         }
     }
 }

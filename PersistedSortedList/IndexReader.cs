@@ -9,7 +9,7 @@ namespace PersistedSortedList.Tests
 {
     public class IndexReader<T> : IIndexReader<T> where T : IComparable
     {
-        private readonly IRepository<T> _repository;
+        public readonly IRepository<T> _repository;
         private readonly IFileAdapter _indexFile;
         private readonly List<Node<T>> _list;
         private MemoryCache _cache;
@@ -44,6 +44,8 @@ namespace PersistedSortedList.Tests
                 return cached;
             }
 
+            if (reference >= _indexFile.Last) return null;
+
             var buffer = _indexFile.Read(reference, Constants.BranchingFactor);
             var node = Deserialize(buffer);
             node.Position = reference;
@@ -54,7 +56,7 @@ namespace PersistedSortedList.Tests
         public void Update(Node<T> node)
         {
             var serialize = Serialize(node);
-            Console.Out.WriteLine("Update " + node.Position.ToString("X8") + " " + Encoding.UTF8.GetString(serialize) + " " + node);
+            Console.Out.WriteLine("Update " + node.Position.ToString("X8") + " " + Encoding.UTF8.GetString(serialize));
             _indexFile.Write(node.Position, serialize);
             _cache.Add(new CacheItem(node.Position.ToString(), node), new CacheItemPolicy { SlidingExpiration = TimeSpan.FromMinutes(1) });
         }
@@ -102,6 +104,11 @@ namespace PersistedSortedList.Tests
             serialized.Append("]");
 
             return Encoding.UTF8.GetBytes(serialized.ToString());
+        }
+
+        public void Dispose()
+        {
+            _indexFile?.Dispose();
         }
     }
 }

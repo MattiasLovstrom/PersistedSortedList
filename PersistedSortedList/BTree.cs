@@ -2,15 +2,25 @@
 
 namespace PersistedSortedList.Tests
 {
-    public class BTree<T> where T : IComparable
+    public class BTree<T> : IDisposable where T : IComparable
     {
         private Node<T> _root;
-        private readonly IIndexReader<T> _indexReader;
+        public readonly IIndexReader<T> _indexReader;
         public int Length;
         
         public BTree(IIndexReader<T> indexReader)
         {
             _indexReader = indexReader;
+
+            _root = _indexReader.Get(0);
+            if (_root == null)
+            {
+                _root = _indexReader.NewNode();
+                //_root.Items.Add(0);
+                _indexReader.Update(_root);
+                Console.Out.WriteLine("Create root :" + _root);
+                Length++;
+            }
         }
 
         public T Get(T prototype)
@@ -21,15 +31,6 @@ namespace PersistedSortedList.Tests
         public int Add(int fileReference)
         {
             Console.Out.WriteLine($"Add {fileReference.ToString("X8")} in {_root}");
-            if (_root == null)
-            {
-                _root = _indexReader.NewNode();
-                _root.Items.Add(fileReference);
-                Console.Out.WriteLine("Create root :" + _root);
-                Length++;
-                _indexReader.Update(_root);
-                return default;
-            }
 
             if (_root.Items.Count >= Constants.BranchingFactor)
             {
@@ -63,6 +64,10 @@ namespace PersistedSortedList.Tests
                 var node = _indexReader.Get(child);
                 Print(node, level++);
             }
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

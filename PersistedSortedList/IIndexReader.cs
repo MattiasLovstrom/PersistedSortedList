@@ -2,7 +2,7 @@
 
 namespace PersistedSortedList.Tests
 {
-    public interface IIndexReader<T> where T : IComparable
+    public interface IIndexReader<T> :IDisposable where T : IComparable
     {
         Node<T> NewNode();
         Node<T> Get(int reference);

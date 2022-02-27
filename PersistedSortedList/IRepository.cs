@@ -1,6 +1,8 @@
-﻿namespace PersistedSortedList
+﻿using System;
+
+namespace PersistedSortedList
 {
-    public interface IRepository<T>
+    public interface IRepository<T> : IDisposable
     {
         int Add(T value);
         T Get(int position);

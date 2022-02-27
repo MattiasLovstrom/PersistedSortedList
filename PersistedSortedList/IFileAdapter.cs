@@ -1,6 +1,8 @@
-﻿namespace PersistedSortedList
+﻿using System;
+
+namespace PersistedSortedList
 {
-    public interface IFileAdapter
+    public interface IFileAdapter : IDisposable
     {
         byte[] Read(long position, long length);
         long Write(long position, byte[] buffer);

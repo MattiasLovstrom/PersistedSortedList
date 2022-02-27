@@ -14,6 +14,8 @@ namespace PersistedSortedList
             IFileAdapter fileAdapter,
             MemoryCache cache)
         {
+            Console.Out.WriteLine("New" + GetType().Name + " " + GetHashCode());
+
             _cache = cache;
             _fileAdapter = fileAdapter;
         }
@@ -36,6 +38,11 @@ namespace PersistedSortedList
             value = JsonSerializer.Deserialize<T>(_fileAdapter.ReadLine(position));
             _cache.Add(position.ToString(), value, new CacheItemPolicy { SlidingExpiration = TimeSpan.FromHours(10) });
             return value;
+        }
+
+        public void Dispose()
+        {
+            _fileAdapter?.Dispose();
         }
     }
 }
